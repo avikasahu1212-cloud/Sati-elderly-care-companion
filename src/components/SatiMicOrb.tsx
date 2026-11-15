@@ -32,7 +32,9 @@ export function SatiMicOrb({
         type="button"
         onClick={onClick}
         aria-label={label}
-        className={`relative flex items-center justify-center rounded-full transition-all duration-200 ease-out active:scale-95 cursor-pointer ${sizeClass} ${
+        aria-pressed={isListening}
+        aria-busy={isThinking}
+        className={`relative min-w-[48px] min-h-[48px] flex items-center justify-center rounded-full transition-all duration-200 ease-out active:scale-95 cursor-pointer ${sizeClass} ${
           isListening
             ? 'bg-[#0D5652] text-white animate-sati-listen'
             : isSpeaking
@@ -48,11 +50,11 @@ export function SatiMicOrb({
             <span className="w-1.5 h-7 rounded-full bg-white animate-sati-wave-4" />
           </div>
         ) : isThinking ? (
-          <Volume2 className={compact ? 'w-7 h-7 animate-pulse' : 'w-11 h-11 animate-pulse'} />
+          <Volume2 aria-hidden="true" className={compact ? 'w-7 h-7 animate-pulse' : 'w-11 h-11 animate-pulse'} />
         ) : isListening ? (
-          <MicOff className={compact ? 'w-7 h-7' : 'w-11 h-11'} />
+          <MicOff aria-hidden="true" className={compact ? 'w-7 h-7' : 'w-11 h-11'} />
         ) : (
-          <Mic className={compact ? 'w-7 h-7' : 'w-11 h-11'} />
+          <Mic aria-hidden="true" className={compact ? 'w-7 h-7' : 'w-11 h-11'} />
         )}
       </button>
     </div>

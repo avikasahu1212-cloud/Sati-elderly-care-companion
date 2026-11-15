@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   BellRing,
+  Eye,
   HeartHandshake,
   KeyRound,
   ShieldCheck,
@@ -69,6 +70,12 @@ export function HowSatiWorksModal({
       title: t.howStep5Title,
       desc: t.howStep5Desc,
     },
+    {
+      icon: Eye,
+      iconBg: 'bg-[#0D5652] text-white',
+      title: t.howAccessibilityTitle,
+      desc: t.howAccessibilityDesc,
+    },
   ];
 
   return (
@@ -79,7 +86,7 @@ export function HowSatiWorksModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={t.howSatiWorksTitle}
+        aria-labelledby="how-sati-works-title"
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -88,7 +95,7 @@ export function HowSatiWorksModal({
       >
         <div className="flex items-start justify-between gap-4 px-6 sm:px-8 py-5 bg-white border-b border-[#DFD5C5]">
           <div className="space-y-1 min-w-0">
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#0D5652]">
+            <h2 id="how-sati-works-title" className="font-display text-2xl sm:text-3xl font-extrabold text-[#0D5652]">
               {t.howSatiWorksTitle}
             </h2>
             <p className="text-sm sm:text-base text-[#3E4C48] leading-snug">
@@ -98,10 +105,10 @@ export function HowSatiWorksModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
-            className="w-11 h-11 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+            aria-label={t.closeBtn}
+            className="w-12 h-12 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center shrink-0 cursor-pointer transition-colors"
           >
-            <X className="w-6 h-6" />
+            <X aria-hidden="true" className="w-6 h-6" />
           </button>
         </div>
 
@@ -114,6 +121,7 @@ export function HowSatiWorksModal({
                 className="bg-white rounded-2xl border border-[#DFD5C5] p-4 sm:p-5 flex items-start gap-4"
               >
                 <div
+                  aria-hidden="true"
                   className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 ${step.iconBg}`}
                 >
                   <Icon className="w-5 h-5" />

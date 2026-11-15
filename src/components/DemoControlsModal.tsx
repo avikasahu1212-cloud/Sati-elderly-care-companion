@@ -40,7 +40,7 @@ export function DemoControlsModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={t.demoControlsTitle}
+        aria-labelledby="demo-controls-title"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -49,7 +49,7 @@ export function DemoControlsModal({
       >
         <div className="flex items-start justify-between gap-4 px-6 sm:px-7 py-5 bg-white border-b border-[#DFD5C5]">
           <div className="space-y-1">
-            <h2 className="font-display text-2xl font-bold text-[#131B19]">
+            <h2 id="demo-controls-title" className="font-display text-2xl font-bold text-[#131B19]">
               {t.demoControlsTitle}
             </h2>
             <p className="text-sm text-[#3E4C48]">{t.demoControlsSubtitle}</p>
@@ -57,16 +57,20 @@ export function DemoControlsModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
-            className="w-11 h-11 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] text-[#3E4C48] hover:text-[#131B19] cursor-pointer shrink-0 transition-colors"
+            aria-label={t.closeBtn}
+            className="w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] text-[#3E4C48] hover:text-[#131B19] cursor-pointer shrink-0 transition-colors"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
         <div className="p-6 sm:p-7 overflow-y-auto space-y-3.5">
           {notice && (
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-sm font-semibold">
+            <div
+              role="status"
+              aria-live="polite"
+              className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-sm font-semibold"
+            >
               {notice}
             </div>
           )}
@@ -139,11 +143,12 @@ export function DemoControlsModal({
                 <button
                   key={role}
                   type="button"
+                  aria-pressed={activeRole === role}
                   onClick={() => {
                     onSwitchRole(role);
                     onClose();
                   }}
-                  className={`flex-1 min-h-[44px] px-3 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
+                  className={`flex-1 min-h-[48px] px-3 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
                     activeRole === role
                       ? 'bg-white text-[#0D5652] shadow-sm'
                       : 'text-[#3E4C48] hover:text-[#131B19]'

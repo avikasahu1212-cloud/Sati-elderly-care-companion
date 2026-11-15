@@ -281,7 +281,7 @@ export function MedicationEditorModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={initialMed ? `${t.editBtn}: ${initialMed.name}` : t.addMedication}
+        aria-labelledby="med-editor-title"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -289,16 +289,16 @@ export function MedicationEditorModal({
         className="sati-card bg-[#FAF7F2] w-full max-w-2xl rounded-t-3xl sm:rounded-3xl max-h-[92vh] flex flex-col overflow-hidden border border-[#DFD5C5] shadow-2xl"
       >
         <div className="flex items-center justify-between px-6 sm:px-7 py-5 bg-white border-b border-[#DFD5C5]">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold">
+          <h2 id="med-editor-title" className="font-display text-2xl sm:text-3xl font-bold">
             {initialMed ? `${t.editBtn}: ${initialMed.name}` : t.addMedication}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
+            aria-label={t.closeBtn}
             className="w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] cursor-pointer"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
@@ -311,7 +311,7 @@ export function MedicationEditorModal({
           >
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <FileScan className="w-7 h-7 text-[#0D5652] shrink-0" />
+                <FileScan className="w-7 h-7 text-[#0D5652] shrink-0" aria-hidden="true" />
                 <div>
                   <div className="font-bold text-lg">{t.scanPrescription}</div>
                   <div className="sati-muted text-sm text-[#3E4C48]">
@@ -319,21 +319,33 @@ export function MedicationEditorModal({
                   </div>
                 </div>
               </div>
-              <label className="min-h-[48px] px-5 py-2.5 rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white text-base font-bold flex items-center gap-2 cursor-pointer transition-colors">
-                {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+              <label className="min-h-[48px] px-5 py-2.5 rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white text-base font-bold flex items-center gap-2 cursor-pointer transition-colors focus-within:outline-3 focus-within:outline-[#D97706] focus-within:outline-offset-2">
+                {scanning ? (
+                  <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Camera className="w-5 h-5" aria-hidden="true" />
+                )}
                 <span>{scanning ? t.scanningText : t.uploadPhotoBtn}</span>
                 <input
                   type="file"
                   accept="image/*"
                   capture="environment"
-                  className="hidden"
+                  className="sr-only"
                   onChange={handleScanFile}
                   disabled={scanning}
                 />
               </label>
             </div>
-            {scanSummary && <p className="text-base text-[#0D5652] font-semibold">{scanSummary}</p>}
-            {scanError && <p className="text-base text-amber-950 bg-amber-50 p-3 rounded-2xl">{scanError}</p>}
+            {scanSummary && (
+              <p role="status" aria-live="polite" className="text-base text-[#0D5652] font-semibold">
+                {scanSummary}
+              </p>
+            )}
+            {scanError && (
+              <p role="alert" className="text-base text-amber-950 bg-amber-50 p-3 rounded-2xl">
+                {scanError}
+              </p>
+            )}
             {scannedList.length > 1 && (
               <div className="flex flex-wrap gap-2 pt-1">
                 {scannedList.map((item, idx) => {
@@ -344,8 +356,9 @@ export function MedicationEditorModal({
                     <button
                       key={`${item.name}-${idx}`}
                       type="button"
+                      aria-pressed={isActive}
                       onClick={() => applyExtracted(item)}
-                      className={`min-h-[44px] px-4 py-2 rounded-2xl text-sm font-bold cursor-pointer transition-colors ${
+                      className={`min-h-[48px] px-4 py-2 rounded-2xl text-sm font-bold cursor-pointer transition-colors ${
                         isActive
                           ? 'bg-[#0D5652] text-white'
                           : 'bg-[#F2ECE1] hover:bg-[#E7DFD1] text-[#131B19]'
@@ -362,8 +375,11 @@ export function MedicationEditorModal({
           {/* Core Medication Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.medicineNameLabel}</label>
+              <label htmlFor="med-name-input" className="block text-base font-semibold mb-1.5">
+                {t.medicineNameLabel}
+              </label>
               <input
+                id="med-name-input"
                 type="text"
                 required
                 pattern=".*\S.*"
@@ -374,8 +390,11 @@ export function MedicationEditorModal({
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.doseLabel}</label>
+              <label htmlFor="med-dose-input" className="block text-base font-semibold mb-1.5">
+                {t.doseLabel}
+              </label>
               <input
+                id="med-dose-input"
                 type="text"
                 required
                 pattern=".*\S.*"
@@ -389,8 +408,11 @@ export function MedicationEditorModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.timesPerDayLabel}</label>
+              <label htmlFor="med-times-input" className="block text-base font-semibold mb-1.5">
+                {t.timesPerDayLabel}
+              </label>
               <input
+                id="med-times-input"
                 type="text"
                 required
                 value={timesStr}
@@ -404,12 +426,17 @@ export function MedicationEditorModal({
                 }`}
               />
               {timesError && (
-                <p className="text-sm font-semibold text-rose-800 mt-1.5">{timesError}</p>
+                <p role="alert" className="text-sm font-semibold text-rose-800 mt-1.5">
+                  {timesError}
+                </p>
               )}
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.foodTimingLabel}</label>
+              <label htmlFor="med-food-select" className="block text-base font-semibold mb-1.5">
+                {t.foodTimingLabel}
+              </label>
               <select
+                id="med-food-select"
                 value={foodTiming}
                 onChange={(e) => setFoodTiming(e.target.value as FoodTiming)}
                 className="w-full min-h-[52px] px-4 rounded-2xl border-2 border-[#DFD5C5] bg-white text-base"
@@ -464,7 +491,13 @@ export function MedicationEditorModal({
           {/* Pill Appearance Picker */}
           <div className="p-5 rounded-3xl bg-white border border-[#DFD5C5] space-y-4">
             <div className="flex items-center gap-5">
-              <PillGraphic color={pillColor} shape={pillShape} size={72} />
+              <PillGraphic
+                color={pillColor}
+                shape={pillShape}
+                size={72}
+                language={language}
+                medName={name.trim() || undefined}
+              />
               <div className="flex-1 space-y-3">
                 <div>
                   <span className="sati-muted block text-sm font-bold text-[#3E4C48] mb-2">
@@ -475,8 +508,9 @@ export function MedicationEditorModal({
                       <button
                         key={c}
                         type="button"
+                        aria-pressed={pillColor === c}
                         onClick={() => setPillColor(c)}
-                        className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-sm font-bold border-2 cursor-pointer transition-colors ${
+                        className={`min-h-[48px] px-4 py-1.5 rounded-xl text-sm font-bold border-2 cursor-pointer transition-colors ${
                           pillColor === c
                             ? 'bg-[#0D5652] text-white border-[#0D5652]'
                             : 'bg-[#FAF7F2] text-[#131B19] border-[#DFD5C5]'
@@ -496,8 +530,9 @@ export function MedicationEditorModal({
                       <button
                         key={s}
                         type="button"
+                        aria-pressed={pillShape === s}
                         onClick={() => setPillShape(s)}
-                        className={`min-h-[40px] px-3.5 py-1.5 rounded-xl text-sm font-bold border-2 cursor-pointer transition-colors ${
+                        className={`min-h-[48px] px-4 py-1.5 rounded-xl text-sm font-bold border-2 cursor-pointer transition-colors ${
                           pillShape === s
                             ? 'bg-[#0D5652] text-white border-[#0D5652]'
                             : 'bg-[#FAF7F2] text-[#131B19] border-[#DFD5C5]'
@@ -514,8 +549,11 @@ export function MedicationEditorModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.stockCountLabel}</label>
+              <label htmlFor="med-stock-input" className="block text-base font-semibold mb-1.5">
+                {t.stockCountLabel}
+              </label>
               <input
+                id="med-stock-input"
                 type="number"
                 min={0}
                 value={stockCount}
@@ -524,8 +562,11 @@ export function MedicationEditorModal({
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.startDateLabel}</label>
+              <label htmlFor="med-start-input" className="block text-base font-semibold mb-1.5">
+                {t.startDateLabel}
+              </label>
               <input
+                id="med-start-input"
                 type="date"
                 value={startDate}
                 onChange={(e) => {
@@ -536,8 +577,11 @@ export function MedicationEditorModal({
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.endDateLabel}</label>
+              <label htmlFor="med-end-input" className="block text-base font-semibold mb-1.5">
+                {t.endDateLabel}
+              </label>
               <input
+                id="med-end-input"
                 type="date"
                 value={endDate}
                 onChange={(e) => {
@@ -549,15 +593,20 @@ export function MedicationEditorModal({
                 }`}
               />
               {dateError && (
-                <p className="text-sm font-semibold text-rose-800 mt-1.5">{dateError}</p>
+                <p role="alert" className="text-sm font-semibold text-rose-800 mt-1.5">
+                  {dateError}
+                </p>
               )}
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.routineCueLabel}</label>
+              <label htmlFor="med-cue-input" className="block text-base font-semibold mb-1.5">
+                {t.routineCueLabel}
+              </label>
               <input
+                id="med-cue-input"
                 type="text"
                 value={routineCue}
                 onChange={(e) => setRoutineCue(e.target.value)}
@@ -566,8 +615,11 @@ export function MedicationEditorModal({
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.simplePurposeLabel}</label>
+              <label htmlFor="med-purpose-input" className="block text-base font-semibold mb-1.5">
+                {t.simplePurposeLabel}
+              </label>
               <input
+                id="med-purpose-input"
                 type="text"
                 value={purpose}
                 onChange={(e) => setPurpose(e.target.value)}
@@ -578,8 +630,11 @@ export function MedicationEditorModal({
           </div>
 
           <div>
-            <label className="block text-base font-semibold mb-1.5">{t.sideEffectsLabel}</label>
+            <label htmlFor="med-sideeffects-input" className="block text-base font-semibold mb-1.5">
+              {t.sideEffectsLabel}
+            </label>
             <input
+              id="med-sideeffects-input"
               type="text"
               value={sideEffectsStr}
               onChange={(e) => setSideEffectsStr(e.target.value)}
@@ -683,7 +738,7 @@ export function PhotoVerifyModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={t.verifyWithPhoto}
+        aria-labelledby="photo-verify-title"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -691,19 +746,27 @@ export function PhotoVerifyModal({
         className="sati-card bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-7 space-y-6 border border-[#DFD5C5] shadow-2xl"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-2xl sm:text-3xl font-bold">{t.verifyWithPhoto}</h3>
+          <h2 id="photo-verify-title" className="font-display text-2xl sm:text-3xl font-bold">
+            {t.verifyWithPhoto}
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
+            aria-label={t.closeBtn}
             className="w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] cursor-pointer"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
         <div className="flex items-center gap-4 p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5]">
-          <PillGraphic color={medicine.pillColor} shape={medicine.pillShape} size={64} />
+          <PillGraphic
+            color={medicine.pillColor}
+            shape={medicine.pillShape}
+            size={64}
+            language={language}
+            medName={medicine.name}
+          />
           <div>
             <div className="font-bold text-xl">
               {medicine.name} {medicine.dose}
@@ -714,28 +777,34 @@ export function PhotoVerifyModal({
           </div>
         </div>
 
-        <label className="w-full min-h-[68px] rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white font-bold text-xl flex items-center justify-center gap-3 cursor-pointer transition-colors">
-          {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <Camera className="w-7 h-7" />}
+        <label className="w-full min-h-[68px] rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white font-bold text-xl flex items-center justify-center gap-3 cursor-pointer transition-colors focus-within:outline-3 focus-within:outline-[#D97706] focus-within:outline-offset-2">
+          {loading ? (
+            <Loader2 className="w-7 h-7 animate-spin" aria-hidden="true" />
+          ) : (
+            <Camera className="w-7 h-7" aria-hidden="true" />
+          )}
           <span>{loading ? t.satiLookingGently : t.takeOrChoosePhoto}</span>
           <input
             type="file"
             accept="image/*"
             capture="environment"
-            className="hidden"
+            className="sr-only"
             onChange={handlePhotoUpload}
             disabled={loading}
           />
         </label>
 
         {error && (
-          <div className="p-4 rounded-2xl bg-amber-50 text-amber-950 text-base flex items-start gap-2.5">
-            <ShieldAlert className="w-6 h-6 shrink-0 mt-0.5" />
+          <div role="alert" className="p-4 rounded-2xl bg-amber-50 text-amber-950 text-base flex items-start gap-2.5">
+            <ShieldAlert className="w-6 h-6 shrink-0 mt-0.5" aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}
 
         {result && (
           <div
+            role="status"
+            aria-live="polite"
             className={`p-5 rounded-2xl border-2 text-lg space-y-4 ${
               result.verified
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
@@ -821,7 +890,7 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={t.addAppointment}
+        aria-labelledby="appt-modal-title"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -829,21 +898,26 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
         className="sati-card bg-[#FAF7F2] w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-7 space-y-5 border border-[#DFD5C5] shadow-2xl"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-2xl sm:text-3xl font-bold">{t.addAppointment}</h3>
+          <h2 id="appt-modal-title" className="font-display text-2xl sm:text-3xl font-bold">
+            {t.addAppointment}
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
+            aria-label={t.closeBtn}
             className="w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] cursor-pointer"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-base font-semibold mb-1.5">{t.doctorNameLabel}</label>
+            <label htmlFor="appt-doctor-input" className="block text-base font-semibold mb-1.5">
+              {t.doctorNameLabel}
+            </label>
             <input
+              id="appt-doctor-input"
               type="text"
               required
               pattern=".*\S.*"
@@ -855,8 +929,11 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.specialtyLabel}</label>
+              <label htmlFor="appt-specialty-input" className="block text-base font-semibold mb-1.5">
+                {t.specialtyLabel}
+              </label>
               <input
+                id="appt-specialty-input"
                 type="text"
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
@@ -865,8 +942,11 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.clinicLabel}</label>
+              <label htmlFor="appt-clinic-input" className="block text-base font-semibold mb-1.5">
+                {t.clinicLabel}
+              </label>
               <input
+                id="appt-clinic-input"
                 type="text"
                 value={clinic}
                 onChange={(e) => setClinic(e.target.value)}
@@ -877,8 +957,11 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.dateLabel}</label>
+              <label htmlFor="appt-date-input" className="block text-base font-semibold mb-1.5">
+                {t.dateLabel}
+              </label>
               <input
+                id="appt-date-input"
                 type="date"
                 required
                 value={date}
@@ -887,8 +970,11 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
               />
             </div>
             <div>
-              <label className="block text-base font-semibold mb-1.5">{t.timeLabel}</label>
+              <label htmlFor="appt-time-input" className="block text-base font-semibold mb-1.5">
+                {t.timeLabel}
+              </label>
               <input
+                id="appt-time-input"
                 type="time"
                 required
                 value={time}
@@ -898,8 +984,11 @@ export function AppointmentModal({ isOpen, onClose, language, onSave }: Appointm
             </div>
           </div>
           <div>
-            <label className="block text-base font-semibold mb-1.5">{t.visitNotesLabel}</label>
+            <label htmlFor="appt-notes-input" className="block text-base font-semibold mb-1.5">
+              {t.visitNotesLabel}
+            </label>
             <input
+              id="appt-notes-input"
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

@@ -105,10 +105,11 @@ export function PinPad({
               <button
                 key="clear"
                 type="button"
+                aria-label={t.pinClearBtn}
                 onClick={handleClear}
                 className="min-h-[68px] sm:min-h-[76px] rounded-2xl bg-[#F2ECE1] hover:bg-[#E7DFD1] border-2 border-[#131B19]/25 text-[#131B19] font-bold text-lg flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-all"
               >
-                <RotateCcw className="w-5 h-5 shrink-0" />
+                <RotateCcw className="w-5 h-5 shrink-0" aria-hidden="true" />
                 <span>{t.pinClearBtn}</span>
               </button>
             );
@@ -118,10 +119,11 @@ export function PinPad({
               <button
                 key="backspace"
                 type="button"
+                aria-label={t.pinBackspaceBtn}
                 onClick={handleBackspace}
                 className="min-h-[68px] sm:min-h-[76px] rounded-2xl bg-[#F2ECE1] hover:bg-[#E7DFD1] border-2 border-[#131B19]/25 text-[#131B19] font-bold text-lg flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-all"
               >
-                <Delete className="w-5 h-5 shrink-0" />
+                <Delete className="w-5 h-5 shrink-0" aria-hidden="true" />
                 <span>{t.pinBackspaceBtn}</span>
               </button>
             );
@@ -130,6 +132,7 @@ export function PinPad({
             <button
               key={key}
               type="button"
+              aria-label={key}
               onClick={() => handleDigit(key)}
               className="min-h-[68px] sm:min-h-[76px] rounded-2xl bg-white hover:bg-[#0D5652] hover:text-white border-2 border-[#131B19] text-[#131B19] font-display text-3xl sm:text-4xl font-extrabold tabular-nums shadow-sm cursor-pointer active:scale-[0.96] transition-all"
             >
@@ -147,14 +150,18 @@ export function PinPad({
             onClick={onForgotPasscode}
             className="w-full min-h-[56px] px-5 py-3 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border-2 border-[#0D5652] text-[#0D5652] font-bold text-lg flex items-center justify-center gap-2.5 cursor-pointer transition-colors"
           >
-            <HelpCircle className="w-6 h-6 shrink-0" />
+            <HelpCircle className="w-6 h-6 shrink-0" aria-hidden="true" />
             <span>{t.forgotPasscodeBtn}</span>
           </button>
 
           {forgotSent && (
-            <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-600 text-emerald-950 space-y-1">
+            <div
+              role="status"
+              aria-live="polite"
+              className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-600 text-emerald-950 space-y-1"
+            >
               <div className="font-bold text-base flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" aria-hidden="true" />
                 <span>{t.forgotPasscodeSentTitle}</span>
               </div>
               <p className="text-sm leading-snug">

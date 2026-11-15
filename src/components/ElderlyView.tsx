@@ -452,10 +452,11 @@ export function ElderlyView({
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 role="status"
+                aria-live="polite"
                 className="p-5 sm:p-6 rounded-3xl bg-[#FAF7F2] border-2 border-[#0D5652] text-[#131B19] flex flex-wrap items-center justify-between gap-4 font-bold"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <CheckCircle2 className="w-8 h-8 text-[#0D5652] shrink-0" />
+                  <CheckCircle2 aria-hidden="true" className="w-8 h-8 text-[#0D5652] shrink-0" />
                   <span>{infoBanner}</span>
                 </div>
                 <button
@@ -472,6 +473,8 @@ export function ElderlyView({
               <motion.div
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
+                role="alert"
+                aria-live="assertive"
                 className="p-6 rounded-3xl bg-amber-50 border-2 border-amber-600 text-amber-950 space-y-2"
               >
                 <div className="flex items-center justify-between gap-3">
@@ -479,7 +482,7 @@ export function ElderlyView({
                   <button
                     type="button"
                     onClick={() => setDoubleDoseMsg(null)}
-                    className="min-h-[44px] px-4 rounded-xl bg-white/80 text-sm font-bold cursor-pointer"
+                    className="min-h-[48px] px-4 rounded-xl bg-white/80 text-sm font-bold cursor-pointer"
                   >
                     {t.dismissBtn}
                   </button>
@@ -499,7 +502,13 @@ export function ElderlyView({
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6">
-                  <PillGraphic color={nextMed.pillColor} shape={nextMed.pillShape} size={104} />
+                  <PillGraphic
+                    color={nextMed.pillColor}
+                    shape={nextMed.pillShape}
+                    size={104}
+                    language={state.language}
+                    medName={nextMed.name}
+                  />
                   <div className="space-y-2.5 min-w-0">
                     <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-[#131B19] leading-tight">
                       {nextMed.name}
@@ -600,9 +609,9 @@ export function ElderlyView({
             {/* Tell the Doctor Voice Symptom Button */}
             <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1 min-w-0">
-                <div className="font-display text-2xl font-bold text-[#131B19]">
+                <h2 className="font-display text-2xl font-bold text-[#131B19]">
                   {t.tellDoctorBtn}
-                </div>
+                </h2>
                 <p className="sati-muted text-base sm:text-lg text-[#3E4C48] leading-snug">
                   {t.tellDoctorDesc}
                 </p>
@@ -612,7 +621,7 @@ export function ElderlyView({
                 onClick={() => setTellDoctorOpen(true)}
                 className="min-h-[64px] px-7 rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white font-display text-xl font-bold shadow-sm flex items-center justify-center gap-3 shrink-0 cursor-pointer transition-colors"
               >
-                <Stethoscope className="w-7 h-7 shrink-0" />
+                <Stethoscope aria-hidden="true" className="w-7 h-7 shrink-0" />
                 <span>{t.tellDoctorBtn}</span>
               </button>
             </div>
@@ -622,15 +631,15 @@ export function ElderlyView({
               (dementiaFriendlyMode && takenTodayLogs.length > 0)) && (
               <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 sm:p-8 space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <h3 className="font-display text-2xl font-bold">
+                  <h2 className="font-display text-2xl font-bold">
                     {dementiaFriendlyMode ? t.takenTodayHeading : t.todaysSchedule}
-                  </h3>
+                  </h2>
                   <button
                     type="button"
                     onClick={onOpenCalendar}
                     className="min-h-[48px] px-5 rounded-2xl bg-[#F2ECE1] hover:bg-[#E7DFD1] text-[#0D5652] text-base font-bold flex items-center gap-2 cursor-pointer transition-colors"
                   >
-                    <Calendar className="w-5 h-5" />
+                    <Calendar aria-hidden="true" className="w-5 h-5" />
                     <span>{t.tabCalendar}</span>
                   </button>
                 </div>
@@ -644,7 +653,13 @@ export function ElderlyView({
                       <div key={log.id} className="py-4 space-y-3">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-4 min-w-0">
-                            <PillGraphic color={med.pillColor} shape={med.pillShape} size={56} />
+                            <PillGraphic
+                              color={med.pillColor}
+                              shape={med.pillShape}
+                              size={56}
+                              language={state.language}
+                              medName={med.name}
+                            />
                             <div className="min-w-0 space-y-1.5">
                               <div className="font-bold text-lg sm:text-xl text-[#131B19]">
                                 {med.name} {med.dose}{' '}
@@ -703,16 +718,17 @@ export function ElderlyView({
           <div className="lg:col-span-5 space-y-7">
             <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 space-y-5">
               <div className="flex items-center gap-3">
-                <Heart className="w-7 h-7 text-[#A85208]" />
-                <h3 className="font-display text-2xl font-bold">{t.moodTitle}</h3>
+                <Heart aria-hidden="true" className="w-7 h-7 text-[#A85208]" />
+                <h2 className="font-display text-2xl font-bold">{t.moodTitle}</h2>
               </div>
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5" role="group" aria-label={t.moodTitle}>
                 {MOODS.map((m) => {
                   const selected = todayMood === m.value;
                   return (
                     <button
                       key={m.value}
                       type="button"
+                      aria-pressed={selected}
                       onClick={() => onRecordMood(m.value)}
                       className={`min-h-[82px] p-2 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all duration-150 cursor-pointer active:scale-95 ${
                         selected
@@ -720,7 +736,7 @@ export function ElderlyView({
                           : 'bg-[#FAF7F2] hover:bg-[#F2ECE1] border-[#DFD5C5]'
                       }`}
                     >
-                      <span className="text-3xl leading-none">{m.emoji}</span>
+                      <span aria-hidden="true" className="text-3xl leading-none">{m.emoji}</span>
                       <span className="text-xs sm:text-sm font-bold leading-tight w-full text-center">
                         {t[m.key]}
                       </span>
@@ -733,8 +749,8 @@ export function ElderlyView({
             <div className="sati-card bg-[#F2ECE1] rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <Sun className="w-7 h-7 text-[#A85208]" />
-                  <h3 className="font-display text-2xl font-bold">{t.dailyTipTitle}</h3>
+                  <Sun aria-hidden="true" className="w-7 h-7 text-[#A85208]" />
+                  <h2 className="font-display text-2xl font-bold">{t.dailyTipTitle}</h2>
                 </div>
                 {dailyTip && (
                   <button
@@ -743,7 +759,7 @@ export function ElderlyView({
                     aria-label={t.readAloud}
                     className="w-12 h-12 rounded-2xl bg-white hover:bg-[#FAF7F2] flex items-center justify-center text-[#0D5652] cursor-pointer transition-colors shrink-0"
                   >
-                    <Volume2 className="w-6 h-6" />
+                    <Volume2 aria-hidden="true" className="w-6 h-6" />
                   </button>
                 )}
               </div>
@@ -773,10 +789,10 @@ export function ElderlyView({
       {activeTab === 'progress' && (
         <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-7 sm:p-10 space-y-7">
           <div className="flex items-center gap-3.5 text-[#0D5652]">
-            <Sparkles className="w-8 h-8 text-[#A85208]" />
-            <h2 className={`font-display font-extrabold ${headingSizeClass}`}>
+            <Sparkles aria-hidden="true" className="w-8 h-8 text-[#A85208]" />
+            <h1 className={`font-display font-extrabold ${headingSizeClass}`}>
               {t.tabProgress}
-            </h2>
+            </h1>
           </div>
 
           <p className="font-display text-2xl sm:text-3xl font-bold text-[#131B19] leading-snug">
@@ -841,6 +857,7 @@ export function ElderlyView({
           onOpenCalendar={onOpenCalendar}
           canAdd
           elderlyLargeMode
+          headingLevel="h1"
         />
       )}
 
@@ -860,7 +877,10 @@ export function ElderlyView({
       {/* PRIVACY & ACCESSIBILITY SETTINGS TAB */}
       {activeTab === 'settings' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
-          <div className="lg:col-span-2 flex items-center justify-between gap-3">
+          <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-3">
+            <h1 className={`font-display font-extrabold text-[#131B19] ${headingSizeClass}`}>
+              {t.tabSettings}
+            </h1>
             <button
               type="button"
               onClick={() => onChangeTab('today')}
@@ -933,8 +953,8 @@ export function ElderlyView({
             </div>
 
             <div className="space-y-3">
-              <label className="block font-bold text-lg">{t.textSizeLabel}</label>
-              <div className="grid grid-cols-3 gap-3">
+              <span id="text-size-group-label" className="block font-bold text-lg">{t.textSizeLabel}</span>
+              <div className="grid grid-cols-3 gap-3" role="group" aria-labelledby="text-size-group-label">
                 {(
                   [
                     ['normal', t.textNormal],
@@ -945,6 +965,7 @@ export function ElderlyView({
                   <button
                     key={scale}
                     type="button"
+                    aria-pressed={textScale === scale}
                     onClick={() => onUpdateAccessibility({ textScale: scale })}
                     className={`min-h-[58px] px-3 rounded-2xl font-bold text-sm sm:text-base border-2 cursor-pointer transition-colors ${
                       textScale === scale
@@ -1142,9 +1163,9 @@ export function ElderlyView({
                       { id: `fc-${Date.now()}`, name: '', relation: '', phone: '' },
                     ])
                   }
-                  className="min-h-[46px] px-4 rounded-2xl bg-[#F2ECE1] hover:bg-[#E7DFD1] text-[#0D5652] text-sm font-bold flex items-center gap-2 cursor-pointer"
+                  className="min-h-[48px] px-4 rounded-2xl bg-[#F2ECE1] hover:bg-[#E7DFD1] text-[#0D5652] text-sm font-bold flex items-center gap-2 cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus aria-hidden="true" className="w-4 h-4" />
                   <span>{t.addContactBtn}</span>
                 </button>
               </div>
@@ -1156,6 +1177,7 @@ export function ElderlyView({
                   >
                     <input
                       type="text"
+                      aria-label={t.contactNamePlaceholder}
                       value={contact.name}
                       onChange={(e) =>
                         setMedIdContacts((prev) =>
@@ -1163,10 +1185,11 @@ export function ElderlyView({
                         )
                       }
                       placeholder={t.contactNamePlaceholder}
-                      className="sm:col-span-4 min-h-[46px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base"
+                      className="sm:col-span-4 min-h-[48px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base"
                     />
                     <input
                       type="text"
+                      aria-label={t.contactRelationPlaceholder}
                       value={contact.relation}
                       onChange={(e) =>
                         setMedIdContacts((prev) =>
@@ -1174,10 +1197,11 @@ export function ElderlyView({
                         )
                       }
                       placeholder={t.contactRelationPlaceholder}
-                      className="sm:col-span-3 min-h-[46px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base"
+                      className="sm:col-span-3 min-h-[48px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base"
                     />
                     <input
                       type="tel"
+                      aria-label={t.contactPhonePlaceholder}
                       value={contact.phone}
                       onChange={(e) =>
                         setMedIdContacts((prev) =>
@@ -1185,17 +1209,17 @@ export function ElderlyView({
                         )
                       }
                       placeholder={t.contactPhonePlaceholder}
-                      className="sm:col-span-4 min-h-[46px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base tabular-nums"
+                      className="sm:col-span-4 min-h-[48px] px-3.5 rounded-xl border border-[#DFD5C5] bg-white text-base tabular-nums"
                     />
                     <button
                       type="button"
                       onClick={() =>
                         setMedIdContacts((prev) => prev.filter((_, i) => i !== idx))
                       }
-                      aria-label={t.deleteBtn}
-                      className="sm:col-span-1 min-h-[46px] rounded-xl bg-white hover:bg-red-50 border border-[#DFD5C5] text-[#991B1B] flex items-center justify-center cursor-pointer"
+                      aria-label={contact.name ? `${t.deleteBtn}: ${contact.name}` : t.deleteBtn}
+                      className="sm:col-span-1 min-w-[48px] min-h-[48px] rounded-xl bg-white hover:bg-red-50 border border-[#DFD5C5] text-[#991B1B] flex items-center justify-center cursor-pointer"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 aria-hidden="true" className="w-4 h-4" />
                     </button>
                   </div>
                 ))}

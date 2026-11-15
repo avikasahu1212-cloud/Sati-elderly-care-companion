@@ -388,9 +388,9 @@ export function MonthlyAdherenceCalendar({
                 type="button"
                 onClick={() => shiftMonth(-1)}
                 aria-label={t.prevMonthLabel}
-                className="w-11 h-11 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
+                className="w-12 h-12 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
@@ -399,7 +399,7 @@ export function MonthlyAdherenceCalendar({
                   setMonthCursor({ year: now.getFullYear(), month: now.getMonth() });
                   setSelectedDate(todayStr);
                 }}
-                className="min-h-[44px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm font-bold text-[#0D5652] cursor-pointer transition-colors"
+                className="min-h-[48px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm font-bold text-[#0D5652] cursor-pointer transition-colors"
               >
                 {t.todayWord}
               </button>
@@ -407,9 +407,9 @@ export function MonthlyAdherenceCalendar({
                 type="button"
                 onClick={() => shiftMonth(1)}
                 aria-label={t.nextMonthLabel}
-                className="w-11 h-11 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
+                className="w-12 h-12 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -451,20 +451,20 @@ export function MonthlyAdherenceCalendar({
                     <span className={`text-sm font-bold ${isToday ? 'underline underline-offset-2' : ''}`}>
                       {cell.dayNum}
                     </span>
-                    {cell.hasAppt && <Stethoscope className="w-3.5 h-3.5 text-[#0D5652]" />}
+                    {cell.hasAppt && <Stethoscope className="w-3.5 h-3.5 text-[#0D5652]" aria-hidden="true" />}
                   </div>
 
                   {cell.totalCount > 0 ? (
                     <div className="flex items-center gap-0.5 text-[11px] font-bold">
-                      {cell.tone === 'green' && <Check className="w-3 h-3 text-emerald-700" />}
-                      {cell.tone === 'amber' && <Minus className="w-3 h-3 text-amber-800" />}
-                      {cell.tone === 'red' && <X className="w-3 h-3 text-rose-700" />}
+                      {cell.tone === 'green' && <Check className="w-3 h-3 text-emerald-700" aria-hidden="true" />}
+                      {cell.tone === 'amber' && <Minus className="w-3 h-3 text-amber-800" aria-hidden="true" />}
+                      {cell.tone === 'red' && <X className="w-3 h-3 text-rose-700" aria-hidden="true" />}
                       <span>
                         {cell.takenCount}/{cell.totalCount}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-[11px] opacity-40">—</span>
+                    <span className="text-[11px] text-[#3E4C48]">—</span>
                   )}
                 </button>
               );
@@ -523,7 +523,13 @@ export function MonthlyAdherenceCalendar({
                   <div key={log.id} className="py-3.5 first:pt-1 last:pb-1 space-y-2">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <PillGraphic color={med.pillColor} shape={med.pillShape} size={42} />
+                        <PillGraphic
+                          color={med.pillColor}
+                          shape={med.pillShape}
+                          size={42}
+                          language={state.language}
+                          medName={med.name}
+                        />
                         <div className="min-w-0">
                           <div className="font-bold text-base truncate text-[#131B19]">
                             {med.name} {med.dose}
@@ -534,7 +540,7 @@ export function MonthlyAdherenceCalendar({
                         </div>
                       </div>
                       <span className={`inline-flex items-center gap-1 text-xs font-bold shrink-0 ${st.cls}`}>
-                        <StatusIcon className="w-4 h-4" />
+                        <StatusIcon className="w-4 h-4" aria-hidden="true" />
                         <span>{st.label}</span>
                       </span>
                     </div>
@@ -544,7 +550,7 @@ export function MonthlyAdherenceCalendar({
                         <button
                           type="button"
                           onClick={() => onVerifyDose(log.id, 'caretaker', t.statusVerifiedTaken)}
-                          className="min-h-[38px] px-3 rounded-xl bg-[#0D5652] hover:bg-[#09413E] text-white text-xs font-bold cursor-pointer transition-colors"
+                          className="min-h-[48px] px-4 rounded-xl bg-[#0D5652] hover:bg-[#09413E] text-white text-xs font-bold cursor-pointer transition-colors"
                         >
                           {t.verifyInPerson}
                         </button>
@@ -552,7 +558,7 @@ export function MonthlyAdherenceCalendar({
                           <button
                             type="button"
                             onClick={() => onMarkMissed(log.id)}
-                            className="min-h-[38px] px-3 rounded-xl bg-white hover:bg-rose-50 border border-[#DFD5C5] text-xs font-bold text-[#3E4C48] hover:text-rose-800 cursor-pointer transition-colors"
+                            className="min-h-[48px] px-4 rounded-xl bg-white hover:bg-rose-50 border border-[#DFD5C5] text-xs font-bold text-[#3E4C48] hover:text-rose-800 cursor-pointer transition-colors"
                           >
                             {t.markMissedBtn}
                           </button>
@@ -626,7 +632,10 @@ export function AdherenceTrendChart({
             <TrendingUp className="w-6 h-6 text-[#0D5652]" />
             <span>{t.adherenceTrendTitle}</span>
           </h2>
-          <div className="sati-muted text-sm text-[#3E4C48] mt-1 tabular-nums">
+          <div
+            aria-live="polite"
+            className="sati-muted text-sm text-[#3E4C48] mt-1 tabular-nums"
+          >
             {t.averageAdherenceWord}: <strong className="text-[#0D5652]">{avgPct}%</strong>
             {inspected && (
               <>
@@ -643,11 +652,12 @@ export function AdherenceTrendChart({
         <div className="flex items-center gap-1 p-1 bg-[#F2ECE1] rounded-2xl">
           <button
             type="button"
+            aria-pressed={range === '14d'}
             onClick={() => {
               setRange('14d');
               setSelectedIdx(null);
             }}
-            className={`min-h-[40px] px-3.5 rounded-xl text-sm font-bold cursor-pointer transition-colors whitespace-nowrap ${
+            className={`min-h-[48px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors whitespace-nowrap ${
               range === '14d' ? 'bg-white text-[#0D5652] shadow-sm' : 'text-[#3E4C48]'
             }`}
           >
@@ -655,11 +665,12 @@ export function AdherenceTrendChart({
           </button>
           <button
             type="button"
+            aria-pressed={range === '30d'}
             onClick={() => {
               setRange('30d');
               setSelectedIdx(null);
             }}
-            className={`min-h-[40px] px-3.5 rounded-xl text-sm font-bold cursor-pointer transition-colors whitespace-nowrap ${
+            className={`min-h-[48px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors whitespace-nowrap ${
               range === '30d' ? 'bg-white text-[#0D5652] shadow-sm' : 'text-[#3E4C48]'
             }`}
           >
@@ -750,9 +761,19 @@ export function AdherenceTrendChart({
                     cy={c.y}
                     r={14}
                     fill="transparent"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${c.point.shortLabel}: ${c.point.taken}/${c.point.total} (${c.point.pct}%)`}
                     className="cursor-pointer"
                     onMouseEnter={() => setSelectedIdx(c.idx)}
+                    onFocus={() => setSelectedIdx(c.idx)}
                     onClick={() => setSelectedIdx(c.idx)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedIdx(c.idx);
+                      }
+                    }}
                   />
                 </g>
               );
@@ -885,6 +906,8 @@ export function PerMedicineBreakdown({
                       color={item.med.pillColor}
                       shape={item.med.pillShape}
                       size={44}
+                      language={language}
+                      medName={item.med.name}
                     />
                     <div className="min-w-0">
                       <div className="font-bold text-lg text-[#131B19] truncate">
@@ -1058,7 +1081,7 @@ export function AlertsTimelineCard({
                       <button
                         type="button"
                         onClick={() => onAcknowledgeAlert(alert.id)}
-                        className="min-h-[38px] px-3.5 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-xs font-bold text-[#131B19] cursor-pointer transition-colors"
+                        className="min-h-[48px] px-4 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-xs font-bold text-[#131B19] cursor-pointer transition-colors"
                       >
                         {t.acknowledgeBtn}
                       </button>

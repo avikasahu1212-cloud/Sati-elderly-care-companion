@@ -817,9 +817,9 @@ export function TalkToSatiPanel({
       {/* Header & Voice Control */}
       <div className="px-6 sm:px-8 py-6 bg-[#FAF7F2] border-b border-[#DFD5C5] flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-[#131B19]">
+          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-[#131B19]">
             {t.talkToSatiTitle}
-          </h2>
+          </h1>
           <p className="sati-muted text-lg text-[#3E4C48]">
             {isListening
               ? t.listeningNow
@@ -832,6 +832,7 @@ export function TalkToSatiPanel({
         </div>
         <button
           type="button"
+          aria-pressed={voiceMuted}
           onClick={() => {
             if (!voiceMuted) {
               stopSpeaking();
@@ -841,7 +842,11 @@ export function TalkToSatiPanel({
           }}
           className="min-h-[52px] px-5 rounded-2xl bg-white hover:bg-[#F2ECE1] border-2 border-[#DFD5C5] flex items-center gap-2.5 text-base font-bold text-[#131B19] cursor-pointer transition-colors"
         >
-          {voiceMuted ? <VolumeX className="w-6 h-6 text-[#3E4C48]" /> : <Volume2 className="w-6 h-6 text-[#0D5652]" />}
+          {voiceMuted ? (
+            <VolumeX aria-hidden="true" className="w-6 h-6 text-[#3E4C48]" />
+          ) : (
+            <Volume2 aria-hidden="true" className="w-6 h-6 text-[#0D5652]" />
+          )}
           <span>{voiceMuted ? t.voiceOff : t.voiceOn}</span>
         </button>
       </div>
@@ -953,7 +958,7 @@ export function TalkToSatiPanel({
           isSpeaking={isSpeaking}
           isThinking={isThinking || isProcessingAudio}
           onClick={toggleListening}
-          label={isListening ? t.stopAndSendBtn : t.talkToSatiTitle}
+          label={isListening ? t.stopAndSendBtn : isSpeaking ? t.satiSpeaking : t.talkToSatiTitle}
         />
 
         {isCloudAudioMode && wakeListenerActive && !isListening && !isThinking && !isProcessingAudio && (
@@ -1048,7 +1053,11 @@ export function TalkToSatiPanel({
 
         {/* "Sati heard:" Large Transcript Card + Big "Not what I said? Try again" Button */}
         {lastHeardTranscript && !isListening && !isProcessingAudio && (
-          <div className="w-full max-w-2xl rounded-3xl bg-white border-2 border-[#DFD5C5] p-5 sm:p-6 space-y-4">
+          <div
+            role="status"
+            aria-live="polite"
+            className="w-full max-w-2xl rounded-3xl bg-white border-2 border-[#DFD5C5] p-5 sm:p-6 space-y-4"
+          >
             <div className="space-y-1.5">
               <div className="text-sm font-bold uppercase tracking-wide text-[#0D5652]">
                 {t.satiHeardLabel}
@@ -1066,7 +1075,7 @@ export function TalkToSatiPanel({
               }}
               className="w-full sm:w-auto min-h-[56px] px-6 py-3 rounded-2xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 text-amber-950 font-extrabold text-lg flex items-center justify-center gap-2.5 cursor-pointer transition-colors"
             >
-              <RotateCcw className="w-5 h-5 shrink-0" />
+              <RotateCcw aria-hidden="true" className="w-5 h-5 shrink-0" />
               <span>{t.tryAgainVoiceBtn}</span>
             </button>
           </div>
@@ -1086,8 +1095,19 @@ export function TalkToSatiPanel({
         </div>
       </div>
 
+      {/* Screen-reader live announcement for Sati's latest reply */}
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {latestAssistantMsg ? `${t.brandName}: ${latestAssistantMsg.text}` : ''}
+      </div>
+
       {/* Conversation History */}
-      <div className="p-6 sm:p-8 space-y-5 max-h-[420px] overflow-y-auto">
+      <div
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-label={t.talkToSatiTitle}
+        className="p-6 sm:p-8 space-y-5 max-h-[420px] overflow-y-auto"
+      >
         {state.chatHistory.map((msg) => (
           <motion.div
             key={msg.id}
@@ -1124,9 +1144,9 @@ export function TalkToSatiPanel({
                       setUsedFallbackVoice(speechRes.usedFallbackVoice);
                     }
                   }}
-                  className="mt-3 min-h-[44px] px-3 rounded-xl bg-white/80 hover:bg-white text-base font-bold text-[#0D5652] inline-flex items-center gap-2 cursor-pointer transition-colors"
+                  className="mt-3 min-h-[48px] px-4 rounded-xl bg-white/80 hover:bg-white text-base font-bold text-[#0D5652] inline-flex items-center gap-2 cursor-pointer transition-colors"
                 >
-                  <Volume2 className="w-5 h-5" />
+                  <Volume2 aria-hidden="true" className="w-5 h-5" />
                   <span>{t.listenAgain}</span>
                 </button>
               )}
@@ -1187,7 +1207,7 @@ export function TalkToSatiPanel({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={t.askAnythingPlaceholder}
-            className="flex-1 min-h-[60px] px-5 rounded-2xl border-2 border-[#DFD5C5] focus:border-[#0D5652] focus:outline-hidden bg-white text-xl"
+            className="flex-1 min-h-[60px] px-5 rounded-2xl border-2 border-[#DFD5C5] focus:border-[#0D5652] bg-white text-xl"
           />
           <button
             type="submit"

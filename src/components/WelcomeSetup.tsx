@@ -118,7 +118,17 @@ export function WelcomeSetup({
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#131B19] flex flex-col justify-center py-10 sm:py-14 px-5 sm:px-8 lg:px-10">
-      <div className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 min-h-[48px] px-5 py-3 rounded-2xl bg-[#0D5652] text-white font-bold text-base shadow-xl inline-flex items-center"
+      >
+        {t.skipToMainContent}
+      </a>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center focus:outline-none"
+      >
         {/* Left Calm Brand & Language Panel */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -126,12 +136,12 @@ export function WelcomeSetup({
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="lg:col-span-6 space-y-8"
         >
-          <div className="flex items-center gap-3.5">
+          <header className="flex items-center gap-3.5">
             <SatiLogo size={52} />
             <span className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0D5652]">
               {t.brandName}
             </span>
-          </div>
+          </header>
 
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.18] text-[#131B19]">
             {t.tagline}
@@ -139,13 +149,14 @@ export function WelcomeSetup({
 
           <div className="space-y-4 pt-1">
             <p className="text-lg font-semibold text-[#3E4C48]">{t.chooseLanguage}</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3" role="group" aria-label={t.chooseLanguage}>
               {LANGUAGES.map((lang) => {
                 const active = language === lang.code;
                 return (
                   <button
                     key={lang.code}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => onSelectLanguage(lang.code)}
                     className={`min-h-[56px] px-4 py-3 rounded-2xl text-left border-2 transition-all duration-150 cursor-pointer flex items-center justify-between active:scale-[0.98] ${
                       active
@@ -271,7 +282,11 @@ export function WelcomeSetup({
                     className="w-full min-h-[56px] px-4 rounded-2xl border-2 border-[#DFD5C5] bg-[#FAF7F2] text-lg"
                   />
                 </div>
-                {errorMsg && <p className="text-base text-amber-900 bg-amber-50 p-4 rounded-2xl">{errorMsg}</p>}
+                {errorMsg && (
+                  <p role="alert" className="text-base text-amber-950 bg-amber-50 border border-amber-300 p-4 rounded-2xl">
+                    {errorMsg}
+                  </p>
+                )}
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
@@ -429,7 +444,7 @@ export function WelcomeSetup({
                         setPasscodeInput(existingPasscode || '482915');
                         setErrorMsg('');
                       }}
-                      className="font-bold tabular-nums text-[#0D5652] underline underline-offset-2 cursor-pointer"
+                      className="min-h-[48px] px-2.5 inline-flex items-center font-bold tabular-nums text-[#0D5652] underline underline-offset-2 cursor-pointer"
                     >
                       {existingPasscode || '482915'}
                     </button>
@@ -445,7 +460,11 @@ export function WelcomeSetup({
                     className="w-full min-h-[54px] px-4 rounded-2xl border-2 border-[#DFD5C5] bg-[#FAF7F2] text-base"
                   />
                 </div>
-                {errorMsg && <p className="text-base text-amber-900 bg-amber-50 p-4 rounded-2xl">{errorMsg}</p>}
+                {errorMsg && (
+                  <p role="alert" className="text-base text-amber-950 bg-amber-50 border border-amber-300 p-4 rounded-2xl">
+                    {errorMsg}
+                  </p>
+                )}
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
@@ -469,7 +488,7 @@ export function WelcomeSetup({
             )}
           </motion.div>
         </div>
-      </div>
+      </main>
 
       <HowSatiWorksModal
         isOpen={howItWorksOpen}

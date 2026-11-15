@@ -102,7 +102,7 @@ export function EmailLogSection({ emailLogs, language }: EmailLogSectionProps) {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-display text-2xl sm:text-3xl font-bold flex items-center gap-2.5">
-          <Mail className="w-7 h-7 text-[#0D5652] shrink-0" />
+          <Mail className="w-7 h-7 text-[#0D5652] shrink-0" aria-hidden="true" />
           <span>{t.emailLogTitle}</span>
         </h2>
         <span className="sati-muted text-sm text-[#3E4C48]">{t.smtpReadyNote}</span>
@@ -116,8 +116,9 @@ export function EmailLogSection({ emailLogs, language }: EmailLogSectionProps) {
               <button
                 key={opt.id}
                 type="button"
+                aria-pressed={active}
                 onClick={() => setFilter(opt.id)}
-                className={`min-h-[44px] px-4 rounded-2xl text-sm font-bold border-2 cursor-pointer transition-colors ${
+                className={`min-h-[48px] px-4 rounded-2xl text-sm font-bold border-2 cursor-pointer transition-colors ${
                   active
                     ? 'bg-[#0D5652] text-white border-[#0D5652]'
                     : 'bg-white hover:bg-[#F2ECE1] text-[#3E4C48] border-[#DFD5C5]'

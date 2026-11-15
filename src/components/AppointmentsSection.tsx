@@ -148,9 +148,9 @@ export function NextAppointmentSpotlight({
             <button
               type="button"
               onClick={onOpenAddAppt}
-              className="min-h-[46px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors"
+              className="min-h-[48px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm sm:text-base font-bold flex items-center gap-2 cursor-pointer transition-colors"
             >
-              <Plus className="w-4 h-4 text-[#0D5652]" />
+              <Plus className="w-4 h-4 text-[#0D5652]" aria-hidden="true" />
               <span>{t.addAppointment}</span>
             </button>
           )}
@@ -158,9 +158,13 @@ export function NextAppointmentSpotlight({
             type="button"
             onClick={shareReport}
             disabled={loading}
-            className="min-h-[46px] px-4 rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors"
+            className="min-h-[48px] px-4 rounded-2xl bg-[#0D5652] hover:bg-[#09413E] text-white text-sm sm:text-base font-bold flex items-center gap-2 cursor-pointer transition-colors"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Share2 className="w-4 h-4" aria-hidden="true" />
+            )}
             <span>{loading ? t.preparingReport : t.shareDoctorReport}</span>
           </button>
         </div>
@@ -223,14 +227,18 @@ export function NextAppointmentSpotlight({
       )}
 
       {reportText && (
-        <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-3">
+        <div
+          role="region"
+          aria-live="polite"
+          className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-3"
+        >
           <div className="flex items-center justify-between gap-2">
             <span className="font-display text-lg font-bold text-[#0D5652]">
               {t.doctorReportHeading}
             </span>
             {copied && (
               <span className="text-sm font-bold text-emerald-800 inline-flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
                 {t.copiedNotice}
               </span>
             )}
@@ -255,6 +263,7 @@ interface AppointmentsSectionProps {
   canAdd?: boolean;
   canDelete?: boolean;
   elderlyLargeMode?: boolean;
+  headingLevel?: 'h1' | 'h2';
 }
 
 export function AppointmentsSection({
@@ -265,6 +274,7 @@ export function AppointmentsSection({
   canAdd = true,
   canDelete = false,
   elderlyLargeMode = false,
+  headingLevel = 'h2',
 }: AppointmentsSectionProps) {
   const t = getT(state.language);
   const speechLocale = LANGUAGES.find((l) => l.code === state.language)?.speechLocale || 'en-IN';
@@ -273,15 +283,17 @@ export function AppointmentsSection({
     [state.appointments]
   );
   const { reportText, usedOfflineFallback, loading, copied, shareReport } = useShareDoctorReport(state);
+  const HeadingTag = headingLevel;
+  const CardHeadingTag = headingLevel === 'h1' ? 'h2' : 'h3';
 
   return (
     <section className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Stethoscope className="w-7 h-7 text-[#0D5652]" />
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#131B19]">
+          <Stethoscope className="w-7 h-7 text-[#0D5652]" aria-hidden="true" />
+          <HeadingTag className="font-display text-2xl sm:text-3xl font-bold text-[#131B19]">
             {t.upcomingAppointments}
-          </h2>
+          </HeadingTag>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -352,16 +364,16 @@ export function AppointmentsSection({
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3.5 min-w-0">
                       <div className="w-12 h-12 rounded-2xl bg-white border border-[#DFD5C5] text-[#0D5652] flex items-center justify-center shrink-0">
-                        <Stethoscope className="w-6 h-6" />
+                        <Stethoscope className="w-6 h-6" aria-hidden="true" />
                       </div>
                       <div className="min-w-0 space-y-0.5">
-                        <h3
+                        <CardHeadingTag
                           className={`font-display font-bold text-[#131B19] ${
                             elderlyLargeMode ? 'text-2xl' : 'text-xl'
                           }`}
                         >
                           {appt.doctorName}
-                        </h3>
+                        </CardHeadingTag>
                         <p className="sati-muted text-base text-[#3E4C48]">{appt.specialty}</p>
                       </div>
                     </div>
@@ -370,10 +382,10 @@ export function AppointmentsSection({
                       <button
                         type="button"
                         onClick={() => onDeleteAppt(appt.id)}
-                        aria-label={t.deleteBtn}
-                        className="w-10 h-10 rounded-xl hover:bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+                        aria-label={`${t.deleteBtn}: ${appt.doctorName}`}
+                        className="w-12 h-12 rounded-xl hover:bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" aria-hidden="true" />
                       </button>
                     )}
                   </div>
@@ -415,14 +427,18 @@ export function AppointmentsSection({
       )}
 
       {reportText && (
-        <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF7F2] border-2 border-[#0D5652] space-y-3">
+        <div
+          role="region"
+          aria-live="polite"
+          className="p-5 sm:p-6 rounded-2xl bg-[#FAF7F2] border-2 border-[#0D5652] space-y-3"
+        >
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-display text-xl font-bold text-[#0D5652]">
+            <CardHeadingTag className="font-display text-xl font-bold text-[#0D5652]">
               {t.doctorReportHeading}
-            </h3>
+            </CardHeadingTag>
             {copied && (
               <span className="text-sm font-bold text-emerald-800 inline-flex items-center gap-1.5">
-                <Copy className="w-4 h-4" />
+                <Copy className="w-4 h-4" aria-hidden="true" />
                 {t.copiedNotice}
               </span>
             )}

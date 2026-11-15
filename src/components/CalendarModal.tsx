@@ -104,7 +104,7 @@ export function CalendarModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label={t.calendarTitle}
+        aria-labelledby="calendar-modal-title"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
@@ -113,15 +113,18 @@ export function CalendarModal({
       >
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 sm:px-7 py-4 sm:py-5 bg-white border-b border-[#DFD5C5]">
           <div className="flex items-center gap-3">
-            <CalendarIcon className="w-7 h-7 text-[#0D5652]" />
-            <h2 className="font-display text-2xl sm:text-3xl font-bold">{t.calendarTitle}</h2>
+            <CalendarIcon className="w-7 h-7 text-[#0D5652]" aria-hidden="true" />
+            <h2 id="calendar-modal-title" className="font-display text-2xl sm:text-3xl font-bold">
+              {t.calendarTitle}
+            </h2>
           </div>
           <div className="flex items-center gap-2.5">
             <div className="flex bg-[#F2ECE1] p-1 rounded-2xl">
               <button
                 type="button"
+                aria-pressed={viewMode === 'month'}
                 onClick={() => setViewMode('month')}
-                className={`min-h-[44px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
+                className={`min-h-[48px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
                   viewMode === 'month' ? 'bg-white text-[#0D5652] shadow-sm' : 'text-[#3E4C48]'
                 }`}
               >
@@ -129,8 +132,9 @@ export function CalendarModal({
               </button>
               <button
                 type="button"
+                aria-pressed={viewMode === 'day'}
                 onClick={() => setViewMode('day')}
-                className={`min-h-[44px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
+                className={`min-h-[48px] px-4 rounded-xl text-sm font-bold cursor-pointer transition-colors ${
                   viewMode === 'day' ? 'bg-white text-[#0D5652] shadow-sm' : 'text-[#3E4C48]'
                 }`}
               >
@@ -140,10 +144,10 @@ export function CalendarModal({
             <button
               type="button"
               onClick={onClose}
-              aria-label={t.cancelBtn}
+              aria-label={t.closeBtn}
               className="w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#F2ECE1] cursor-pointer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-6 h-6" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -157,9 +161,9 @@ export function CalendarModal({
                     type="button"
                     onClick={() => shiftMonth(-1)}
                     aria-label={t.prevMonthLabel}
-                    className="w-11 h-11 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
+                    className="w-12 h-12 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
                   >
-                    <ChevronLeft className="w-5 h-5 text-[#131B19]" />
+                    <ChevronLeft className="w-5 h-5 text-[#131B19]" aria-hidden="true" />
                   </button>
                   <span className="font-display text-xl sm:text-2xl font-bold px-1">
                     {monthDays.monthLabel}
@@ -168,15 +172,15 @@ export function CalendarModal({
                     type="button"
                     onClick={() => shiftMonth(1)}
                     aria-label={t.nextMonthLabel}
-                    className="w-11 h-11 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
+                    className="w-12 h-12 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center cursor-pointer transition-colors"
                   >
-                    <ChevronRight className="w-5 h-5 text-[#131B19]" />
+                    <ChevronRight className="w-5 h-5 text-[#131B19]" aria-hidden="true" />
                   </button>
                 </div>
                 <button
                   type="button"
                   onClick={jumpToToday}
-                  className="min-h-[44px] px-4 rounded-xl bg-[#FAF7F2] text-base font-bold text-[#0D5652] hover:bg-[#F2ECE1] cursor-pointer"
+                  className="min-h-[48px] px-4 rounded-xl bg-[#FAF7F2] text-base font-bold text-[#0D5652] hover:bg-[#F2ECE1] cursor-pointer"
                 >
                   {t.tabToday}
                 </button>
@@ -219,6 +223,7 @@ export function CalendarModal({
                     <button
                       key={cell.dateStr}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => {
                         setSelectedDate(cell.dateStr);
                         setViewMode('day');
@@ -227,7 +232,7 @@ export function CalendarModal({
                     >
                       <span className="text-base font-bold">{cell.dayNum}</span>
                       {logs.length > 0 && (
-                        <span className={`text-[10px] font-bold ${isSelected ? 'text-teal-100' : 'opacity-80'}`}>
+                        <span className={`text-[10px] font-bold ${isSelected ? 'text-teal-100' : 'text-[#3E4C48]'}`}>
                           {takenCount}/{logs.length}
                           {hasAppt ? ' ·' : ''}
                         </span>
@@ -299,7 +304,13 @@ export function CalendarModal({
                       className="p-5 rounded-2xl bg-white border border-[#DFD5C5] flex items-center justify-between gap-4"
                     >
                       <div className="flex items-center gap-4 min-w-0">
-                        <PillGraphic color={med.pillColor} shape={med.pillShape} size={52} />
+                        <PillGraphic
+                          color={med.pillColor}
+                          shape={med.pillShape}
+                          size={52}
+                          language={language}
+                          medName={med.name}
+                        />
                         <div className="min-w-0">
                           <div className="font-bold text-lg truncate">
                             {med.name} {med.dose}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { PillColor, PillShape } from '../types';
+import { formatTemplate, getT } from '../i18n/translations';
+import { LanguageCode, PillColor, PillShape } from '../types';
 
 const COLOR_MAP: Record<PillColor, { primary: string; secondary: string; stroke: string }> = {
   white: { primary: '#FFFFFF', secondary: '#E7E5E4', stroke: '#9CA3AF' },
@@ -37,20 +38,49 @@ export function PillGraphic({
   color,
   shape,
   size = 64,
+  language = 'en',
+  medName,
+  alt,
 }: {
   color: PillColor;
   shape: PillShape;
   size?: number;
+  language?: LanguageCode;
+  medName?: string;
+  alt?: string;
 }) {
   const palette = COLOR_MAP[color] || COLOR_MAP.white;
+  const t = getT(language);
+  const colorLabelMap: Record<PillColor, string> = {
+    white: t.colorWhite,
+    yellow: t.colorYellow,
+    pink: t.colorPink,
+    blue: t.colorBlue,
+    amber: t.colorAmber,
+    teal: t.colorTeal,
+    green: t.colorGreen,
+  };
+  const shapeLabelMap: Record<PillShape, string> = {
+    round: t.shapeRound,
+    oval: t.shapeOval,
+    capsule: t.shapeCapsule,
+  };
+  const colorWord = colorLabelMap[color] || color;
+  const shapeWord = shapeLabelMap[shape] || shape;
+  const descriptiveAlt =
+    alt ||
+    (medName
+      ? formatTemplate(t.pillGraphicForMedAlt, { color: colorWord, shape: shapeWord, med: medName })
+      : formatTemplate(t.pillGraphicAlt, { color: colorWord, shape: shapeWord }));
 
   return (
     <div
+      role="img"
+      aria-label={descriptiveAlt}
       className="flex items-center justify-center rounded-2xl bg-[#F3EDE2] border border-[#E5DDD0] shrink-0"
       style={{ width: size, height: size }}
-      aria-label={`${color} ${shape} pill`}
     >
-      <svg width={size * 0.68} height={size * 0.68} viewBox="0 0 48 48" fill="none">
+      <svg aria-hidden="true" width={size * 0.68} height={size * 0.68} viewBox="0 0 48 48" fill="none">
         {shape === 'round' && (
           <>
             <circle cx="24" cy="24" r="16" fill={palette.primary} stroke={palette.stroke} strokeWidth="2.5" />

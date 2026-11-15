@@ -295,6 +295,8 @@ export function FamilyView({
         <div className="space-y-7">
           {/* Calm "All is well" Family Status Indicator */}
           <div
+            role="status"
+            aria-live="polite"
             className={`sati-card rounded-3xl border px-6 py-4 sm:py-5 flex items-center gap-4 ${
               wellbeing.tone === 'green'
                 ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
@@ -436,7 +438,12 @@ export function FamilyView({
                   </button>
                 </div>
                 {reportText && (
-                  <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-4">
+                  <div
+                    role="region"
+                    aria-live="polite"
+                    aria-label={t.doctorReportCardTitle}
+                    className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-4"
+                  >
                     {usedOfflineReport && (
                       <p className="text-sm font-medium text-amber-900 bg-amber-50 border border-amber-200 px-3.5 py-2 rounded-xl">
                         {t.offlineReportNote}
@@ -490,7 +497,13 @@ export function FamilyView({
                       return (
                         <div key={log.id} className="py-4 flex items-center justify-between gap-4">
                           <div className="flex items-center gap-4">
-                            <PillGraphic color={med.pillColor} shape={med.pillShape} size={50} />
+                            <PillGraphic
+                              color={med.pillColor}
+                              shape={med.pillShape}
+                              size={50}
+                              language={state.language}
+                              medName={med.name}
+                            />
                             <div>
                               <div className="font-bold text-lg">
                                 {med.name} {med.dose}
@@ -519,12 +532,12 @@ export function FamilyView({
 
               <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 space-y-4">
                 <div className="flex items-center gap-2.5">
-                  <Heart className="w-6 h-6 text-[#A85208]" />
-                  <h3 className="font-display text-2xl font-bold">{t.wellbeingMoodTitle}</h3>
+                  <Heart aria-hidden="true" className="w-6 h-6 text-[#A85208]" />
+                  <h2 className="font-display text-2xl font-bold">{t.wellbeingMoodTitle}</h2>
                 </div>
                 {!state.privacy.shareMoodWithFamily ? (
                   <div className="flex items-center gap-2.5 text-base text-[#3E4C48]">
-                    <Lock className="w-5 h-5" />
+                    <Lock aria-hidden="true" className="w-5 h-5" />
                     <span>{t.privacyBlockedNotice}</span>
                   </div>
                 ) : latestMood ? (
@@ -548,34 +561,35 @@ export function FamilyView({
               </div>
 
               <div className="sati-card bg-[#F2ECE1] rounded-3xl border border-[#DFD5C5] p-6 sm:p-7 space-y-4">
-                <h3 className="font-display text-2xl font-bold">{t.recordFamilyVoice}</h3>
+                <h2 className="font-display text-2xl font-bold">{t.recordFamilyVoice}</h2>
                 <p className="sati-muted text-base text-[#3E4C48] leading-relaxed">
                   {t.recordFamilyVoiceDesc}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="button"
+                    aria-pressed={recording}
                     onClick={toggleRecordVoice}
                     className={`min-h-[50px] px-5 rounded-2xl font-bold text-base flex items-center gap-2 cursor-pointer transition-colors ${
                       recording ? 'bg-rose-700 text-white' : 'bg-[#0D5652] hover:bg-[#09413E] text-white'
                     }`}
                   >
-                    {recording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                    {recording ? <Square aria-hidden="true" className="w-5 h-5" /> : <Mic aria-hidden="true" className="w-5 h-5" />}
                     <span>{recording ? t.stopRecordingBtn : t.recordVoiceBtn}</span>
                   </button>
-                  <label className="min-h-[50px] px-5 rounded-2xl bg-white hover:bg-[#FAF7F2] border-2 border-[#DFD5C5] text-base font-bold flex items-center gap-2 cursor-pointer transition-colors">
-                    <Upload className="w-5 h-5" />
+                  <label className="min-h-[50px] px-5 rounded-2xl bg-white hover:bg-[#FAF7F2] border-2 border-[#DFD5C5] focus-within:outline-3 focus-within:outline-[#D97706] focus-within:outline-offset-2 text-base font-bold flex items-center gap-2 cursor-pointer transition-colors">
+                    <Upload aria-hidden="true" className="w-5 h-5" />
                     <span>{t.uploadAudioBtn}</span>
                     <input
                       type="file"
                       accept="audio/*"
-                      className="hidden"
+                      className="sr-only"
                       onChange={handleUploadAudioFile}
                     />
                   </label>
                 </div>
                 {voiceError && (
-                  <p className="text-sm font-semibold text-amber-950 bg-amber-50 border border-amber-300 px-4 py-2.5 rounded-2xl">
+                  <p role="alert" className="text-sm font-semibold text-amber-950 bg-amber-50 border border-amber-300 px-4 py-2.5 rounded-2xl">
                     {voiceError}
                   </p>
                 )}

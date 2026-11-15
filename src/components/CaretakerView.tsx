@@ -242,7 +242,7 @@ export function CaretakerView({
                   <button
                     type="button"
                     onClick={onTestReminder}
-                    className="min-h-[46px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm font-bold cursor-pointer transition-colors"
+                    className="min-h-[48px] px-4 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] text-sm font-bold cursor-pointer transition-colors"
                   >
                     {t.testReminderBtn}
                   </button>
@@ -271,7 +271,13 @@ export function CaretakerView({
                           className="py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                         >
                           <div className="flex items-center gap-4">
-                            <PillGraphic color={med.pillColor} shape={med.pillShape} size={58} />
+                            <PillGraphic
+                              color={med.pillColor}
+                              shape={med.pillShape}
+                              size={58}
+                              language={state.language}
+                              medName={med.name}
+                            />
                             <div className="space-y-1">
                               <div className="flex flex-wrap items-center gap-3">
                                 <span className="font-bold text-xl">
@@ -354,7 +360,7 @@ export function CaretakerView({
               />
 
               <div className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 space-y-4">
-                <h3 className="font-display text-xl font-bold">{t.activityTimeline}</h3>
+                <h2 className="font-display text-xl font-bold">{t.activityTimeline}</h2>
                 <div className="space-y-3 max-h-[260px] overflow-y-auto">
                   {todaysDoses.filter((d) => d.confirmedAt || d.verifiedAt).length === 0 ? (
                     <p className="sati-muted text-sm text-[#3E4C48]">{t.noTimelineYet}</p>
@@ -470,7 +476,13 @@ export function CaretakerView({
                   className="sati-card bg-white rounded-3xl border border-[#DFD5C5] p-6 flex flex-col justify-between gap-5"
                 >
                   <div className="flex items-start gap-4">
-                    <PillGraphic color={med.pillColor} shape={med.pillShape} size={64} />
+                    <PillGraphic
+                      color={med.pillColor}
+                      shape={med.pillShape}
+                      size={64}
+                      language={state.language}
+                      medName={med.name}
+                    />
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center justify-between gap-3">
                         <h3 className="font-display text-2xl font-bold truncate">

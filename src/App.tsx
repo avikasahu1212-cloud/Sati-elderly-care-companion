@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { MotionConfig } from 'motion/react';
 import {
   AlertOctagon,
   Award,
@@ -121,6 +122,17 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = state.language;
   }, [state.language]);
+
+  useEffect(() => {
+    const scale = state.accessibility.textScale;
+    document.documentElement.style.fontSize =
+      scale === 'xlarge' ? '125%' : scale === 'large' ? '112.5%' : '100%';
+    document.documentElement.classList.toggle('high-contrast', Boolean(state.accessibility.highContrast));
+    return () => {
+      document.documentElement.style.fontSize = '';
+      document.documentElement.classList.remove('high-contrast');
+    };
+  }, [state.accessibility.textScale, state.accessibility.highContrast]);
 
   useEffect(() => {
     return () => {
@@ -435,16 +447,18 @@ export default function App() {
 
   if (!state.isSetupComplete) {
     return (
-      <WelcomeSetup
-        language={state.language}
-        hasExistingCircle={state.isSetupComplete}
-        existingPasscode={state.isSetupComplete ? state.passcode : '482915'}
-        onSelectLanguage={setLanguage}
-        onStartDemo={() => loadDemoMode(state.language)}
-        onCompleteElderlySetup={completeFreshElderlySetup}
-        onJoinWithPasscode={joinCircleWithPasscode}
-        onForgotPasscode={requestPasscodeHelp}
-      />
+      <MotionConfig reducedMotion="user">
+        <WelcomeSetup
+          language={state.language}
+          hasExistingCircle={state.isSetupComplete}
+          existingPasscode={state.isSetupComplete ? state.passcode : '482915'}
+          onSelectLanguage={setLanguage}
+          onStartDemo={() => loadDemoMode(state.language)}
+          onCompleteElderlySetup={completeFreshElderlySetup}
+          onJoinWithPasscode={joinCircleWithPasscode}
+          onForgotPasscode={requestPasscodeHelp}
+        />
+      </MotionConfig>
     );
   }
 
@@ -456,32 +470,48 @@ export default function App() {
     : null;
 
   const unreadAlertCount = state.alerts.filter((a) => !a.acknowledged).length;
+  const latestAlert = state.alerts[0];
   const rootClass = state.accessibility.highContrast ? 'high-contrast' : '';
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className={`min-h-screen overflow-x-hidden bg-[#FAF7F2] text-[#131B19] flex flex-col ${rootClass}`}>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 min-h-[48px] px-5 py-3 rounded-2xl bg-[#0D5652] text-white font-bold text-base shadow-xl inline-flex items-center"
+      >
+        {t.skipToMainContent}
+      </a>
+
+      {/* Global Screen-Reader Live Region for Alerts & Confirmations */}
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {externalConfirmedSignal?.message ||
+          (latestAlert && !latestAlert.acknowledged ? `${latestAlert.title}. ${latestAlert.message}` : '')}
+      </div>
+
       {/* Sticky Top Header */}
-      <header className="sticky top-0 z-30 h-14 sm:h-16 bg-white/95 backdrop-blur-md border-b border-[#DFD5C5] px-2.5 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4">
+      <header className="sticky top-0 z-30 min-h-[60px] sm:h-16 bg-white/95 backdrop-blur-md border-b border-[#DFD5C5] px-2 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between gap-1 sm:gap-4">
         <div
           onClick={handleBrandTap}
           className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink select-none"
         >
           <span className="shrink-0">
-            <SatiLogo size={32} />
+            <SatiLogo size={28} />
           </span>
-          <span className="font-display text-lg sm:text-2xl font-extrabold text-[#0D5652] truncate">
+          <span className="font-display text-base sm:text-2xl font-extrabold text-[#0D5652] truncate">
             {t.brandName}
           </span>
         </div>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-7 text-base font-bold text-[#3E4C48]">
+        <nav aria-label={t.primaryNavLabel} className="hidden lg:flex items-center gap-6 text-base font-bold text-[#3E4C48]">
           {activeRole === 'elderly' && (
             <>
               <button
                 type="button"
                 onClick={() => setElderlyTab('today')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={elderlyTab === 'today' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   elderlyTab === 'today' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -490,7 +520,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setElderlyTab('progress')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={elderlyTab === 'progress' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   elderlyTab === 'progress' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -499,7 +530,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setElderlyTab('appointments')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={elderlyTab === 'appointments' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   elderlyTab === 'appointments' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -508,7 +540,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setElderlyTab('talk')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={elderlyTab === 'talk' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   elderlyTab === 'talk' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -517,7 +550,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setElderlyTab('settings')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={elderlyTab === 'settings' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   elderlyTab === 'settings' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -531,7 +565,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setCaretakerTab('dashboard')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={caretakerTab === 'dashboard' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   caretakerTab === 'dashboard' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -540,7 +575,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setCaretakerTab('medications')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={caretakerTab === 'medications' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   caretakerTab === 'medications' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -549,7 +585,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setCaretakerTab('alerts')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={caretakerTab === 'alerts' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   caretakerTab === 'alerts' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -558,7 +595,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setCaretakerTab('emails')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={caretakerTab === 'emails' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   caretakerTab === 'emails' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -572,7 +610,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setFamilyTab('overview')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={familyTab === 'overview' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   familyTab === 'overview' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -581,7 +620,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setFamilyTab('alerts')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={familyTab === 'alerts' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   familyTab === 'alerts' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -590,7 +630,8 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setFamilyTab('emails')}
-                className={`whitespace-nowrap py-2 cursor-pointer transition-colors ${
+                aria-current={familyTab === 'emails' ? 'page' : undefined}
+                className={`min-h-[48px] px-2 inline-flex items-center whitespace-nowrap cursor-pointer transition-colors ${
                   familyTab === 'emails' ? 'text-[#0D5652] underline underline-offset-8 decoration-2' : 'hover:text-[#131B19]'
                 }`}
               >
@@ -606,7 +647,7 @@ export default function App() {
             aria-label={t.chooseLanguage}
             value={state.language}
             onChange={(e) => setLanguage(e.target.value as LanguageCode)}
-            className="h-9 sm:h-11 max-w-[70px] sm:max-w-none px-1 sm:px-2.5 rounded-xl border border-[#DFD5C5] bg-[#FAF7F2] text-xs sm:text-sm font-bold cursor-pointer"
+            className="min-h-[48px] max-w-[58px] sm:max-w-none px-1 sm:px-2.5 rounded-xl border border-[#DFD5C5] bg-[#FAF7F2] text-xs sm:text-sm font-bold cursor-pointer"
           >
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -619,7 +660,7 @@ export default function App() {
             aria-label={t.switchRole}
             value={activeRole}
             onChange={(e) => switchRoleView(e.target.value as UserRole)}
-            className="h-9 sm:h-11 max-w-[80px] sm:max-w-none px-1 sm:px-2.5 rounded-xl border border-[#DFD5C5] bg-[#FAF7F2] text-xs sm:text-sm font-bold cursor-pointer"
+            className="min-h-[48px] max-w-[66px] sm:max-w-none px-1 sm:px-2.5 rounded-xl border border-[#DFD5C5] bg-[#FAF7F2] text-xs sm:text-sm font-bold cursor-pointer"
           >
             <option value="elderly">
               {t.roleElderShort} ({state.elderly.honorificName})
@@ -632,9 +673,9 @@ export default function App() {
             type="button"
             onClick={() => triggerEmergencyFlow(t.tabEmergency)}
             aria-label={t.tabEmergency}
-            className="h-9 sm:h-11 px-2 sm:px-3.5 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white text-sm font-bold flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors"
+            className="min-w-[48px] min-h-[48px] px-2.5 sm:px-3.5 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white text-sm font-bold flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-colors"
           >
-            <AlertOctagon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+            <AlertOctagon aria-hidden="true" className="w-5 h-5 shrink-0" />
             <span className="hidden sm:inline">{t.tabEmergency}</span>
           </button>
 
@@ -646,9 +687,9 @@ export default function App() {
             }}
             title={t.demoControlsTitle}
             aria-label={t.demoControlsTitle}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl border border-[#DFD5C5] hover:bg-[#F2ECE1] flex items-center justify-center text-[#3E4C48] hover:text-[#0D5652] cursor-pointer transition-colors"
+            className="w-12 h-12 rounded-xl border border-[#DFD5C5] hover:bg-[#F2ECE1] flex items-center justify-center text-[#3E4C48] hover:text-[#0D5652] cursor-pointer transition-colors"
           >
-            <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Settings aria-hidden="true" className="w-5 h-5" />
           </button>
 
           <button
@@ -656,16 +697,20 @@ export default function App() {
             onClick={() => setConfirmResetOpen(true)}
             title={t.logoutReset}
             aria-label={t.logoutReset}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl border border-[#DFD5C5] hover:bg-[#F2ECE1] flex items-center justify-center text-[#3E4C48] hover:text-[#131B19] cursor-pointer transition-colors"
+            className="w-12 h-12 rounded-xl border border-[#DFD5C5] hover:bg-[#F2ECE1] flex items-center justify-center text-[#3E4C48] hover:text-[#131B19] cursor-pointer transition-colors"
           >
-            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+            <RotateCcw aria-hidden="true" className="w-5 h-5" />
           </button>
         </div>
       </header>
 
       {/* Active Gentle Dose Reminder & Escalation Banner */}
       {activeReminder && (
-        <div className="bg-[#0D5652] text-white px-4 sm:px-6 py-4 border-b border-teal-950">
+        <div
+          role="status"
+          aria-live="polite"
+          className="bg-[#0D5652] text-white px-4 sm:px-6 py-4 border-b border-teal-950"
+        >
           <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
               <Clock className="w-7 h-7 text-amber-300 shrink-0" />
@@ -767,7 +812,7 @@ export default function App() {
       )}
 
       {/* Main Content Canvas */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-9 pb-32 lg:pb-16">
+      <main id="main-content" tabIndex={-1} className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 sm:pt-9 pb-32 lg:pb-16 focus:outline-none">
         {activeRole === 'elderly' && (
           <ElderlyView
             state={state}
@@ -854,55 +899,59 @@ export default function App() {
       )}
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 h-[66px] bg-white/95 backdrop-blur-md border-t border-[#DFD5C5] px-1">
+      <nav aria-label={t.mobileNavLabel} className="lg:hidden fixed bottom-0 left-0 right-0 z-40 h-[66px] bg-white/95 backdrop-blur-md border-t border-[#DFD5C5] px-1">
         {activeRole === 'elderly' && (
           <div className="grid grid-cols-5 h-full items-center">
             <button
               type="button"
               onClick={() => setElderlyTab('today')}
-              className={`flex flex-col items-center justify-center h-full cursor-pointer transition-colors ${
+              aria-current={elderlyTab === 'today' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] cursor-pointer transition-colors ${
                 elderlyTab === 'today' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48] font-medium'
               }`}
             >
-              <Home className="w-6 h-6" />
+              <Home aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabToday}</span>
             </button>
             <button
               type="button"
               onClick={() => setElderlyTab('progress')}
-              className={`flex flex-col items-center justify-center h-full cursor-pointer transition-colors ${
+              aria-current={elderlyTab === 'progress' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] cursor-pointer transition-colors ${
                 elderlyTab === 'progress' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48] font-medium'
               }`}
             >
-              <Award className="w-6 h-6" />
+              <Award aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabProgress}</span>
             </button>
             <button
               type="button"
               onClick={() => setElderlyTab('appointments')}
-              className={`flex flex-col items-center justify-center h-full cursor-pointer transition-colors ${
+              aria-current={elderlyTab === 'appointments' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] cursor-pointer transition-colors ${
                 elderlyTab === 'appointments' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48] font-medium'
               }`}
             >
-              <Calendar className="w-6 h-6" />
+              <Calendar aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabAppointments}</span>
             </button>
             <button
               type="button"
               onClick={() => setElderlyTab('talk')}
-              className={`flex flex-col items-center justify-center h-full cursor-pointer transition-colors ${
+              aria-current={elderlyTab === 'talk' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] cursor-pointer transition-colors ${
                 elderlyTab === 'talk' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48] font-medium'
               }`}
             >
-              <MessageCircleHeart className="w-6 h-6" />
+              <MessageCircleHeart aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabTalk}</span>
             </button>
             <button
               type="button"
               onClick={() => triggerEmergencyFlow(t.tabEmergency)}
-              className="flex flex-col items-center justify-center h-full text-[#B91C1C] font-extrabold cursor-pointer"
+              className="flex flex-col items-center justify-center h-full min-h-[48px] text-[#B91C1C] font-extrabold cursor-pointer"
             >
-              <AlertOctagon className="w-6 h-6" />
+              <AlertOctagon aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabEmergency}</span>
             </button>
           </div>
@@ -913,31 +962,34 @@ export default function App() {
             <button
               type="button"
               onClick={() => setCaretakerTab('dashboard')}
-              className={`flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={caretakerTab === 'dashboard' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 caretakerTab === 'dashboard' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <ClipboardList className="w-6 h-6" />
+              <ClipboardList aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabDashboard}</span>
             </button>
             <button
               type="button"
               onClick={() => setCaretakerTab('medications')}
-              className={`flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={caretakerTab === 'medications' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 caretakerTab === 'medications' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <Pill className="w-6 h-6" />
+              <Pill aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabMedications}</span>
             </button>
             <button
               type="button"
               onClick={() => setCaretakerTab('alerts')}
-              className={`relative flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={caretakerTab === 'alerts' ? 'page' : undefined}
+              className={`relative flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 caretakerTab === 'alerts' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <Bell className="w-6 h-6" />
+              <Bell aria-hidden="true" className="w-6 h-6" />
               {unreadAlertCount > 0 && (
                 <span className="absolute top-1.5 right-3 sm:right-6 min-w-[18px] h-[18px] px-1 rounded-full bg-[#B91C1C] text-white text-[10px] font-extrabold flex items-center justify-center tabular-nums">
                   {unreadAlertCount}
@@ -948,11 +1000,12 @@ export default function App() {
             <button
               type="button"
               onClick={() => setCaretakerTab('emails')}
-              className={`flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={caretakerTab === 'emails' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 caretakerTab === 'emails' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <Mail className="w-6 h-6" />
+              <Mail aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.viewEmailLog}</span>
             </button>
           </div>
@@ -963,21 +1016,23 @@ export default function App() {
             <button
               type="button"
               onClick={() => setFamilyTab('overview')}
-              className={`flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={familyTab === 'overview' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 familyTab === 'overview' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <LayoutDashboard className="w-6 h-6" />
+              <LayoutDashboard aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.tabOverview}</span>
             </button>
             <button
               type="button"
               onClick={() => setFamilyTab('alerts')}
-              className={`relative flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={familyTab === 'alerts' ? 'page' : undefined}
+              className={`relative flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 familyTab === 'alerts' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <HeartHandshake className="w-6 h-6" />
+              <HeartHandshake aria-hidden="true" className="w-6 h-6" />
               {unreadAlertCount > 0 && (
                 <span className="absolute top-1.5 right-4 sm:right-8 min-w-[18px] h-[18px] px-1 rounded-full bg-[#B91C1C] text-white text-[10px] font-extrabold flex items-center justify-center tabular-nums">
                   {unreadAlertCount}
@@ -988,11 +1043,12 @@ export default function App() {
             <button
               type="button"
               onClick={() => setFamilyTab('emails')}
-              className={`flex flex-col items-center justify-center h-full min-w-0 cursor-pointer ${
+              aria-current={familyTab === 'emails' ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] min-w-0 cursor-pointer ${
                 familyTab === 'emails' ? 'text-[#0D5652] font-extrabold' : 'text-[#3E4C48]'
               }`}
             >
-              <Users className="w-6 h-6" />
+              <Users aria-hidden="true" className="w-6 h-6" />
               <span className="text-[11px] mt-1 truncate max-w-full px-1">{t.viewEmailLog}</span>
             </button>
           </div>
@@ -1212,5 +1268,6 @@ export default function App() {
         </div>
       )}
     </div>
+    </MotionConfig>
   );
 }

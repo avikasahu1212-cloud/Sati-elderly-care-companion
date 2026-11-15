@@ -374,21 +374,24 @@ export function TellDoctorModal({
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t.tellDoctorModalTitle}
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tell-doctor-title"
         className="sati-card bg-white rounded-3xl border border-[#DFD5C5] shadow-xl w-full max-w-xl p-6 sm:p-8 space-y-5 max-h-[92vh] overflow-y-auto"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-[#F2ECE1] text-[#0D5652] flex items-center justify-center shrink-0">
-              <Stethoscope className="w-7 h-7" />
+              <Stethoscope className="w-7 h-7" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#131B19]">
+              <h2
+                id="tell-doctor-title"
+                className="font-display text-2xl sm:text-3xl font-extrabold text-[#131B19]"
+              >
                 {t.tellDoctorModalTitle}
               </h2>
               <p className="sati-muted text-base text-[#3E4C48] mt-0.5">
@@ -399,10 +402,10 @@ export function TellDoctorModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label={t.cancelBtn}
+            aria-label={t.closeBtn}
             className="w-12 h-12 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#DFD5C5] flex items-center justify-center text-[#131B19] shrink-0 cursor-pointer transition-colors"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
@@ -429,7 +432,7 @@ export function TellDoctorModal({
                   type="button"
                   disabled={checkingPermission}
                   onClick={handleAllowMic}
-                  className="min-h-[44px] px-4 rounded-xl bg-[#0D5652] hover:bg-[#09413E] text-white text-sm sm:text-base font-bold cursor-pointer transition-colors"
+                  className="min-h-[48px] px-4 rounded-xl bg-[#0D5652] hover:bg-[#09413E] text-white text-sm sm:text-base font-bold cursor-pointer transition-colors"
                 >
                   {checkingPermission ? t.checkingMicBtn : micPermission === 'denied' ? t.retryMicBtn : t.allowMicBtn}
                 </button>
@@ -482,7 +485,11 @@ export function TellDoctorModal({
           </div>
         )}
 
+        <label htmlFor="tell-doctor-textarea" className="sr-only">
+          {t.tellDoctorPlaceholder}
+        </label>
         <textarea
+          id="tell-doctor-textarea"
           ref={textareaRef}
           value={text}
           onChange={(e) => {
@@ -491,14 +498,18 @@ export function TellDoctorModal({
           }}
           placeholder={t.tellDoctorPlaceholder}
           rows={4}
-          className="w-full p-5 rounded-2xl border-2 border-[#DFD5C5] bg-[#FAF7F2] text-xl leading-relaxed text-[#131B19] focus:outline-hidden focus:border-[#0D5652]"
+          className="w-full p-5 rounded-2xl border-2 border-[#DFD5C5] bg-[#FAF7F2] text-xl leading-relaxed text-[#131B19] focus:border-[#0D5652]"
         />
 
         {(statusNote || voiceErrorDetail) && (
-          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 space-y-1">
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 space-y-1"
+          >
             {statusNote && <div className="text-base font-medium">{statusNote}</div>}
             {voiceErrorDetail && (
-              <div className="text-xs font-mono opacity-80 break-all">
+              <div className="text-xs font-mono text-amber-950 break-all">
                 {t.voiceErrorReasonLabel} {voiceErrorDetail}
               </div>
             )}
@@ -591,10 +602,10 @@ export function DoctorNotesCard({
                   <button
                     type="button"
                     onClick={() => onDeleteNote(note.id)}
-                    aria-label={t.deleteBtn}
-                    className="w-10 h-10 rounded-xl hover:bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+                    aria-label={`${t.deleteBtn}: ${getSymptomCategoryLabel(note.category, language)}`}
+                    className="w-12 h-12 rounded-xl hover:bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-5 h-5" aria-hidden="true" />
                   </button>
                 )}
               </div>

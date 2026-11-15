@@ -44,16 +44,18 @@ export function EmergencyOverlay({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={t.emergencyTitle}
+      aria-labelledby="emergency-overlay-title"
       className="fixed inset-0 z-50 bg-[#7F1D1D] text-white flex flex-col overflow-y-auto p-5 sm:p-8"
     >
       <div className="max-w-2xl w-full mx-auto space-y-6 my-auto">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-white text-[#991B1B] flex items-center justify-center shrink-0">
-            <PhoneCall className="w-9 h-9 animate-pulse" />
+            <PhoneCall className="w-9 h-9 animate-pulse" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="font-display text-3xl sm:text-4xl font-extrabold">{t.emergencyTitle}</h1>
+            <h1 id="emergency-overlay-title" className="font-display text-3xl sm:text-4xl font-extrabold">
+              {t.emergencyTitle}
+            </h1>
             <p className="text-lg text-red-100 mt-1">{t.emergencySubtitle}</p>
           </div>
         </div>
@@ -93,10 +95,10 @@ export function EmergencyOverlay({
 
         {/* Responder Medical Card */}
         <div className="bg-white text-[#131B19] rounded-3xl p-6 space-y-4 shadow-xl">
-          <div className="flex items-center gap-2.5 text-[#991B1B] font-display text-2xl font-bold">
-            <HeartPulse className="w-7 h-7" />
+          <h2 className="flex items-center gap-2.5 text-[#991B1B] font-display text-2xl font-bold">
+            <HeartPulse className="w-7 h-7" aria-hidden="true" />
             <span>{t.medicalSummaryForResponders}</span>
-          </div>
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-base">
             <div>
               <div className="text-xs font-semibold uppercase tracking-wide text-[#3E4C48]">{t.patientWord}</div>
@@ -180,14 +182,14 @@ export function InactivityCheckModal({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={t.areYouOkayTitle}
+        aria-labelledby="inactivity-check-title"
         className="sati-card bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-6 border-2 border-[#0D5652] shadow-2xl text-center"
       >
         <div className="w-16 h-16 rounded-full bg-amber-100 text-[#A85208] mx-auto flex items-center justify-center">
-          <ShieldAlert className="w-9 h-9" />
+          <ShieldAlert className="w-9 h-9" aria-hidden="true" />
         </div>
         <div className="space-y-2">
-          <h2 className="font-display text-3xl font-bold text-[#131B19]">
+          <h2 id="inactivity-check-title" className="font-display text-3xl font-bold text-[#131B19]">
             {t.areYouOkayTitle}
           </h2>
           <p className="text-lg text-[#3E4C48]">

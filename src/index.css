@@ -38,9 +38,13 @@
   a:focus-visible,
   input:focus-visible,
   select:focus-visible,
-  textarea:focus-visible {
-    outline: 3px solid #D97706;
-    outline-offset: 2px;
+  textarea:focus-visible,
+  [tabindex]:focus-visible,
+  [role="button"]:focus-visible,
+  [role="switch"]:focus-visible,
+  summary:focus-visible {
+    outline: 3px solid #D97706 !important;
+    outline-offset: 2px !important;
   }
 }
 
@@ -50,13 +54,14 @@
   --sati-surface-soft: #F1F1EC;
   --sati-border: #000000;
   --sati-ink: #000000;
-  --sati-ink-muted: #111827;
+  --sati-ink-muted: #000000;
   --sati-teal: #004238;
   --sati-teal-hover: #002D26;
   --sati-amber: #7C2D12;
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
-.high-contrast,
 .high-contrast .sati-card {
   background-color: #FFFFFF !important;
   color: #000000 !important;
@@ -65,7 +70,30 @@
 }
 
 .high-contrast .sati-muted {
-  color: #111827 !important;
+  color: #000000 !important;
+}
+
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.high-contrast header,
+.high-contrast nav {
+  background-color: #FFFFFF !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+.high-contrast .border-\[\#DFD5C5\] {
+  border-color: #000000 !important;
+}
+
+.high-contrast .text-\[\#3E4C48\] {
+  color: #000000 !important;
 }
 
 .tabular-nums {
@@ -133,7 +161,13 @@
   .animate-sati-wave-1,
   .animate-sati-wave-2,
   .animate-sati-wave-3,
-  .animate-sati-wave-4 {
-    animation: none;
+  .animate-sati-wave-4,
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

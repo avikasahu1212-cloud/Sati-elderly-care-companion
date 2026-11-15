@@ -75,17 +75,17 @@ export function MedicalIdModal({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={t.medicalIdTitle}
+      aria-labelledby="medical-id-title"
       className="fixed inset-0 z-50 bg-[#131B19] text-white flex flex-col overflow-y-auto"
     >
       {/* Sticky High-Contrast Header */}
       <div className="sticky top-0 z-10 bg-[#991B1B] text-white px-4 sm:px-8 py-4 border-b border-red-900 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-12 h-12 rounded-2xl bg-white text-[#991B1B] flex items-center justify-center shrink-0 shadow-sm">
-            <HeartPulse className="w-7 h-7" />
+            <HeartPulse className="w-7 h-7" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight truncate">
+            <h1 id="medical-id-title" className="font-display text-2xl sm:text-3xl font-extrabold leading-tight truncate">
               {t.medicalIdTitle}
             </h1>
             <p className="text-sm sm:text-base text-red-100 leading-snug">
@@ -175,7 +175,7 @@ export function MedicalIdModal({
             <button
               type="button"
               onClick={() => setCallingStatus(null)}
-              className="min-h-[44px] px-4 rounded-xl bg-white/20 hover:bg-white/30 text-sm font-bold cursor-pointer"
+              className="min-h-[48px] px-4 rounded-xl bg-white/20 hover:bg-white/30 text-sm font-bold cursor-pointer"
             >
               {t.dismissBtn}
             </button>
@@ -183,7 +183,11 @@ export function MedicalIdModal({
         )}
 
         {missingPhoneNotice && (
-          <div className="p-5 rounded-3xl bg-amber-100 text-amber-950 border-2 border-amber-400 flex flex-wrap items-center justify-between gap-3 font-semibold text-base sm:text-lg">
+          <div
+            role="alert"
+            aria-live="polite"
+            className="p-5 rounded-3xl bg-amber-100 text-amber-950 border-2 border-amber-400 flex flex-wrap items-center justify-between gap-3 font-semibold text-base sm:text-lg"
+          >
             <span>{t.noPhoneAddedNote}</span>
             {onGoToEdit && (
               <button
@@ -253,10 +257,10 @@ export function MedicalIdModal({
           {/* Doctor & Family Contacts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
             <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-3">
-              <div className="flex items-center gap-2 font-display text-xl font-bold text-[#0D5652]">
-                <Stethoscope className="w-6 h-6 shrink-0" />
+              <h2 className="flex items-center gap-2 font-display text-xl font-bold text-[#0D5652]">
+                <Stethoscope className="w-6 h-6 shrink-0" aria-hidden="true" />
                 <span>{t.doctorContactLabel}</span>
-              </div>
+              </h2>
               <div className="space-y-1">
                 <div className="font-bold text-xl text-[#131B19]">
                   {doctorName || t.notSpecifiedWord}
@@ -268,10 +272,10 @@ export function MedicalIdModal({
             </div>
 
             <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] space-y-3">
-              <div className="flex items-center gap-2 font-display text-xl font-bold text-[#0D5652]">
-                <Users className="w-6 h-6 shrink-0" />
+              <h2 className="flex items-center gap-2 font-display text-xl font-bold text-[#0D5652]">
+                <Users className="w-6 h-6 shrink-0" aria-hidden="true" />
                 <span>{t.familyContactsLabel}</span>
-              </div>
+              </h2>
               {contacts.length === 0 ? (
                 <div className="text-base text-[#3E4C48]">{t.notSpecifiedWord}</div>
               ) : (
@@ -292,9 +296,10 @@ export function MedicalIdModal({
                         <a
                           href={`tel:${c.phone.replace(/\s+/g, '')}`}
                           onClick={() => triggerCall(c.name, c.phone)}
-                          className="min-h-[44px] px-4 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white text-sm font-bold flex items-center gap-1.5 shrink-0"
+                          aria-label={`${t.callContactBtn}: ${c.name}`}
+                          className="min-h-[48px] px-4 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white text-sm font-bold flex items-center gap-1.5 shrink-0"
                         >
-                          <PhoneCall className="w-4 h-4" />
+                          <PhoneCall className="w-4 h-4" aria-hidden="true" />
                           <span>{t.callContactBtn}</span>
                         </a>
                       )}
@@ -307,10 +312,10 @@ export function MedicalIdModal({
 
           {/* Current Medicines */}
           <div className="space-y-3 pt-2">
-            <div className="flex items-center gap-2 font-display text-2xl font-bold text-[#131B19]">
-              <Pill className="w-6 h-6 text-[#0D5652]" />
+            <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-[#131B19]">
+              <Pill className="w-6 h-6 text-[#0D5652]" aria-hidden="true" />
               <span>{t.activeMedicationsWord}</span>
-            </div>
+            </h2>
             {medications.length === 0 ? (
               <div className="p-4 rounded-2xl bg-[#FAF7F2] text-lg text-[#3E4C48]">
                 {t.noneReported}
@@ -324,7 +329,13 @@ export function MedicalIdModal({
                       key={m.id}
                       className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#DFD5C5] flex items-center gap-3.5"
                     >
-                      <PillGraphic color={m.pillColor} shape={m.pillShape} size={52} />
+                      <PillGraphic
+                        color={m.pillColor}
+                        shape={m.pillShape}
+                        size={52}
+                        language={language}
+                        medName={m.name}
+                      />
                       <div className="min-w-0 space-y-1">
                         <div className="font-bold text-lg text-[#131B19] truncate">
                           {m.name} · {m.dose}

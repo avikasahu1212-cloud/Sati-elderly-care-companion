@@ -419,7 +419,14 @@ export interface TranslationDict {
   howStep4Desc: string;
   howStep5Title: string;
   howStep5Desc: string;
+  howAccessibilityTitle: string;
+  howAccessibilityDesc: string;
   howSatiWorksCtaDemo: string;
+  skipToMainContent: string;
+  primaryNavLabel: string;
+  mobileNavLabel: string;
+  pillGraphicAlt: string;
+  pillGraphicForMedAlt: string;
   defaultMedPurpose: string;
   defaultSpecialty: string;
   defaultClinic: string;
@@ -951,7 +958,14 @@ const en: TranslationDict = {
   howStep4Desc: 'At dose time Sati speaks warmly. If unanswered: repeats after 10 min → alerts caretaker → after 10 more min alerts family, logging every simulated email.',
   howStep5Title: '5. Verified vs. Said-Taken',
   howStep5Desc: 'Separates "Said Taken" (elder confirmation) from "Verified Taken" (photo check, caretaker sign-off, or pillbox sensor), while blocking accidental double doses.',
+  howAccessibilityTitle: '6. Accessibility & Dignity',
+  howAccessibilityDesc: 'Includes Normal, Large & Extra Large text across every view, High Contrast mode, Dementia-friendly mode, 48px+ touch targets, full keyboard focus, screen-reader live announcements, reduced-motion support, and voice + text input.',
   howSatiWorksCtaDemo: 'Try Demo Mode Now',
+  skipToMainContent: 'Skip to main content',
+  primaryNavLabel: 'Primary navigation',
+  mobileNavLabel: 'Mobile bottom navigation',
+  pillGraphicAlt: '{color} {shape} pill',
+  pillGraphicForMedAlt: '{color} {shape} pill for {med}',
   defaultMedPurpose: 'Daily prescribed care',
   defaultSpecialty: 'General Consultation',
   defaultClinic: 'Local Clinic',
@@ -1479,7 +1493,14 @@ const hi: TranslationDict = {
   howStep4Desc: 'समय पर सती प्यार से याद दिलाती है। जवाब न मिलने पर: 10 मिनट बाद दोबारा याद → केयरटेकर को अलर्ट → 10 मिनट बाद परिवार को अलर्ट और हर ईमेल लॉग होता है।',
   howStep5Title: '5. Verified बनाम Said-Taken',
   howStep5Desc: '"लेने की सूचना" (बुज़ुर्ग का कहना) और "सत्यापित" (फोटो जांच, केयरटेकर पुष्टि या पिलबॉक्स सेंसर) अलग रहते हैं, और दोहरी खुराक रोकी जाती है।',
+  howAccessibilityTitle: '6. सुलभता और गरिमा (Accessibility)',
+  howAccessibilityDesc: 'हर स्क्रीन पर सामान्य, बड़ा व अतिरिक्त बड़ा टेक्स्ट, हाई कॉन्ट्रास्ट मोड, डिमेंशिया-अनुकूल मोड, 48px+ बड़े बटन, पूर्ण कीबोर्ड नेविगेशन, स्क्रीन-रीडर लाइव घोषणाएं, कम गति समर्थन और आवाज़ व टेक्स्ट दोनों विकल्प मिलते हैं।',
   howSatiWorksCtaDemo: 'अभी डेमो मोड देखें',
+  skipToMainContent: 'मुख्य सामग्री पर जाएं',
+  primaryNavLabel: 'मुख्य नेविगेशन',
+  mobileNavLabel: 'मोबाइल त्वरित नेविगेशन',
+  pillGraphicAlt: '{color} {shape} गोली',
+  pillGraphicForMedAlt: '{med} की {color} {shape} गोली',
   defaultMedPurpose: 'दैनिक निर्धारित देखभाल',
   defaultSpecialty: 'सामान्य परामर्श',
   defaultClinic: 'स्थानीय क्लिनिक',
@@ -2007,7 +2028,14 @@ const mr: TranslationDict = {
   howStep4Desc: 'वेळेवर सती प्रेमाने बोलते. प्रतिसाद न मिळाल्यास: 10 मिनिटांनी पुन्हा आठवण → काळजीवाहूंना सूचना → आणखी 10 मिनिटांनी कुटुंबाला सूचना व प्रत्येक ईमेल नोंदवला जातो.',
   howStep5Title: '5. Verified विरुद्ध Said-Taken',
   howStep5Desc: '"घेतल्याची नोंद" (ज्येष्ठांचे बोलणे) आणि "खात्रीशीर" (फोटो तपासणी, काळजीवाहू खात्री किंवा पिलबॉक्स सेन्सर) वेगळे ठेवले जातात आणि दुहेरी डोस रोखला जातो.',
+  howAccessibilityTitle: '6. सुलभता आणि सन्मान (Accessibility)',
+  howAccessibilityDesc: 'सर्व स्क्रीनवर सामान्य, मोठा व अतिमोठा मजकूर, हाय कॉन्ट्रास्ट मोड, डिमेंशिया-स्नेही मोड, 48px+ मोठी बटणे, पूर्ण कीबोर्ड नेव्हिगेशन, स्क्रीन-रीडर थेट सूचना, कमी हालचाल आधार आणि आवाज + मजकूर पर्याय आहेत.',
   howSatiWorksCtaDemo: 'आता डेमो मोड पहा',
+  skipToMainContent: 'मुख्य भागाकडे जा',
+  primaryNavLabel: 'मुख्य नेव्हिगेशन',
+  mobileNavLabel: 'मोबाईल तळाचे नेव्हिगेशन',
+  pillGraphicAlt: '{color} {shape} गोळी',
+  pillGraphicForMedAlt: '{med} साठी {color} {shape} गोळी',
   defaultMedPurpose: 'दैनंदिन औषधोपचार',
   defaultSpecialty: 'सामान्य तपासणी',
   defaultClinic: 'स्थानिक क्लिनिक',
