@@ -1,0 +1,11 @@
+{
+  "name": "Sati",
+  "description": "A warm, voice-first elderly care and medication management care circle with AI companion Sati.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
